@@ -56,7 +56,7 @@ open class Socket {
         self.options.reusePort = reusePort
 
         var addr = sockaddr(sockaddr_in(host: host, port: port, family: AF_INET))
-        guard bind(descriptor, &addr, sockaddr_in.length) == 0 else {
+        guard Platform.bind(descriptor, &addr, sockaddr.size) != -1 else {
             throw SocketError()
         }
         guard Platform.listen(descriptor, backlog) != -1 else {
@@ -67,7 +67,7 @@ open class Socket {
 
     open func accept() throws -> Socket {
         var addr = sockaddr()
-        var addrLen = sockaddr.length
+        var addrLen = sockaddr.size
         var client: Int32 = 0
         try awaiter?.wait(for: descriptor, event: .read)
         client = Platform.accept(descriptor, &addr, &addrLen)
@@ -80,7 +80,7 @@ open class Socket {
     @discardableResult
     open func connect(to host: String, port: UInt16) throws -> Socket {
         var addr = sockaddr(sockaddr_in(host: host, port: port, family: AF_INET))
-        guard Platform.connect(descriptor, &addr, sockaddr.length) != -1 else {
+        guard Platform.connect(descriptor, &addr, sockaddr.size) != -1 else {
             throw SocketError()
         }
         return self
@@ -104,7 +104,7 @@ open class Socket {
     open func write(bytes pointer: UnsafePointer<UInt8>, count: Int) throws -> Int {
         try awaiter?.wait(for: descriptor, event: .write)
         let written = Platform.write(descriptor, pointer, count)
-        guard written != -1 && written == count else {
+        guard written != -1 else {
             throw SocketError()
         }
         return written
