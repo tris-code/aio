@@ -13,4 +13,5 @@ import XCTest
 
 XCTMain([
      testCase(SocketTests.allTests),
+     testCase(SocketAwaiterTests.allTests),
 ])
