@@ -38,7 +38,7 @@ class SocketTests: XCTestCase {
 
         do {
             let socket = try Socket()
-            _ = try socket.connect(to: "127.0.0.1", port: 3000)
+                .connect(to: "127.0.0.1", port: 3000)
             let written = try socket.send(bytes: message)
             XCTAssertEqual(written, message.count)
             var response = [UInt8](repeating: 0, count: message.count)
@@ -75,7 +75,7 @@ class SocketTests: XCTestCase {
 
         do {
             let socket = try Socket(family: .inet, type: .stream)
-            _ = try socket.connect(to: "127.0.0.1", port: 3001)
+                .connect(to: "127.0.0.1", port: 3001)
             let written = try socket.send(bytes: message)
             XCTAssertEqual(written, message.count)
             var response = [UInt8](repeating: 0, count: message.count)
@@ -155,7 +155,7 @@ class SocketTests: XCTestCase {
 
         do {
             let socket = try Socket(family: .inet6, type: .stream)
-            _ = try socket.connect(to: "::1", port: 3004)
+                .connect(to: "::1", port: 3004)
             let written = try socket.send(bytes: message)
             XCTAssertEqual(written, message.count)
             var response = [UInt8](repeating: 0, count: message.count)
@@ -234,7 +234,7 @@ class SocketTests: XCTestCase {
 
         do {
             let socket = try Socket(family: .unix, type: .stream)
-            _ = try socket.connect(to: "/tmp/teststream.sock")
+                .connect(to: "/tmp/teststream.sock")
             let written = try socket.send(bytes: message)
             XCTAssertEqual(written, message.count)
             var response = [UInt8](repeating: 0, count: message.count)
@@ -316,7 +316,7 @@ class SocketTests: XCTestCase {
 
         do {
             let socket = try Socket(family: .unix, type: .sequenced)
-            _ = try socket.connect(to: "/tmp/testsequenced.sock")
+                .connect(to: "/tmp/testsequenced.sock")
             let written = try socket.send(bytes: message)
             XCTAssertEqual(written, message.count)
             var response = [UInt8](repeating: 0, count: message.count)
