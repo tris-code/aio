@@ -16,26 +16,32 @@ import Dispatch
 class PerformanceTests: XCTestCase {
     let message = [UInt8]("Hello, World!".utf8)
 
+    var port: UInt16 = {
+        return UInt16(arc4random_uniform(64_000)) + 1_500
+    }()
+
     func testPerformance() {
-        let condition = AtomicCondition()
+        let ready = AtomicCondition()
 
         DispatchQueue.global().async {
             do {
                 let socket = try Socket()
+                    .bind(to: "127.0.0.1", port: self.port)
+                    .listen()
 
-                try socket.listen(at: "127.0.0.1", port: 4446)
-                condition.signal()
+                ready.signal()
+
                 while true {
                     let client = try socket.accept()
                     var buffer = [UInt8](repeating: 0, count: self.message.count)
                     do {
                         var read = 0
                         repeat {
-                            read = try client.read(to: &buffer)
-                            _ = try client.write(bytes: buffer, count: read)
+                            read = try client.receive(to: &buffer)
+                            _ = try client.send(bytes: buffer)
                         } while read > 0
                     } catch {
-                        print(error)
+                        XCTFail(String(describing: error))
                     }
                 }
             } catch {
@@ -43,20 +49,19 @@ class PerformanceTests: XCTestCase {
             }
         }
 
-        condition.wait()
+        ready.wait()
 
         measure {
             do {
                 let socket = try Socket()
-                _ = try socket.connect(to: "127.0.0.1", port: 4446)
+                _ = try socket.connect(to: "127.0.0.1", port: self.port)
 
                 var response = [UInt8](repeating: 0, count: self.message.count)
 
-                for _ in 0..<10_000 {
-                    _ = try socket.write(bytes: self.message)
-                    _ = try socket.read(to: &response)
+                for _ in 0..<1_000 {
+                    _ = try socket.send(bytes: self.message)
+                    _ = try socket.receive(to: &response)
                 }
-
             } catch {
                 XCTFail(String(describing: error))
             }

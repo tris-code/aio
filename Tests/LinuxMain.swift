@@ -13,6 +13,9 @@ import XCTest
 
 XCTMain([
      testCase(SocketTests.allTests),
+     testCase(AddressTests.allTests),
+     testCase(OptionsTests.allTests),
+     testCase(AbstractionTests.allTests),
      testCase(SocketAwaiterTests.allTests),
      testCase(PerformanceTests.allTests),
 ])
