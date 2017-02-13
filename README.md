@@ -1,11 +1,6 @@
 # Socket
 
-Blocking sockets with non-blocking awaiter designed for cooperative multitasking.
-
-Another way to achieve that behaviour would be using blocking Socket base class and AsyncSocket subclass,<br>
-but it will lead to more complex and tied code, plus the last time we checked it was significantly slower,<br>
-while our primary goal is to have zero-cost non-blocking socket for cooperative multitasking.<br>
-But we will revisit this design soon.
+Zero-cost socket abstraction with optional non-blocking awaiter designed for cooperative multitasking.
 
 ## Package.swift
 
@@ -13,46 +8,202 @@ But we will revisit this design soon.
 .Package(url: "https://github.com/tris-foundation/socket.git", majorVersion: 0)
 ```
 
+## Memo
+
+```swift
+final class Socket {
+    enum Family {
+        case inet, inet6, unspecified, unix
+    }
+
+    enum SocketType {
+        case stream, datagram, sequenced
+    }
+
+    enum Address {
+        init(_: String, port: UInt16? = nil) throws
+        init(ip4: String, port: UInt16) throws
+        init(ip6: String, port: UInt16) throws 
+        init(unix: String) throws
+    }
+
+    init(descriptor: Int32? = nil, family: Family = .tcp, type: SocketType = .stream, awaiter: IOAwaiter? = nil) throws
+
+    func bind(to: Address) throws -> Socket
+    func listen() throws -> Socket
+
+    func accept() throws -> Socket
+    func connect(to: Address) throws -> Socket
+
+    func close(silent: Bool = false) throws
+
+    func send(buffer: UnsafeRawPointer, count: Int) throws -> Int
+    func send(buffer: UnsafeRawPointer, count: Int, to: Address) throws -> Int
+
+    func receive(buffer: UnsafeMutableRawPointer, count: Int) throws -> Int
+    func receive(buffer: UnsafeMutableRawPointer, count: Int, from: Address) throws -> Int
+}
+
+extension Socket
+    func bind(to: String, port: UInt16) throws -> Socket
+    func bind(to: String) throws -> Socket
+
+    func connect(to: String, port: UInt16) throws -> Socket
+    func connect(to: String) throws -> Socket
+
+    func send(bytes: [UInt8]) throws -> Int
+    func send(bytes: [UInt8], to: Address) throws -> Int
+
+    func receive(to: inout [UInt8]) throws -> Int
+    func receive(to: inout [UInt8], from: Address) throws -> Int
+}
+```
+
 ## Usage
 
 You can find this code and more in [examples](https://github.com/tris-foundation/examples).
 
+### Sync
+```swift
+let socket = try Socket()
+```
+
+### Async
 ```swift
 // you can also use AsyncDispatch fallback
 // see the first README.md commit to get the idea
 
 let async = AsyncFiber()
-let hey = [UInt8]("hey there!".utf8)
+let socket = try Socket(awaiter: async.awaiter)
+```
+
+### TCP
+```swift
+let hello = [UInt8]("Hello, World!".utf8)
 
 async.task {
     do {
         let socket = try Socket(awaiter: async.awaiter)
-        try socket.listen(at: "127.0.0.1", port: 7654)
-        while true {
-            let client = try socket.accept()
-            let written = try client.write(bytes: hey)
-        }
+            .bind(to: "127.0.0.1", port: 1111)
+            .listen()
+
+        let client = try socket.accept()
+        _ = try client.send(bytes: hello)
     } catch {
-        print("server socket error \(error)")
+        print("tcp server socket error \(error)")
     }
 }
 
 async.task {
     do {
-        for _ in 0..<10 {
-            let socket = try Socket(awaiter: async.awaiter)
-            try socket.connect(to: "127.0.0.1", port: 7654)
+        let socket = try Socket(awaiter: async.awaiter)
+            .connect(to: "127.0.0.1", port: 1111)
 
-            var buffer = [UInt8](repeating: 0, count: 100)
-            let read = try socket.read(to: &buffer)
+        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        _ = try socket.receive(to: &buffer)
 
-            print(String(cString: buffer))
-        }
-        exit(0)
+        print("tcp: \(String(cString: buffer))")
     } catch {
-        print("client socket error \(error)")
+        print("tcp client socket error \(error)")
+    }
+}
+```
+
+### UDP
+```swift
+let udpServerAddress = try Socket.Address("127.0.0.1", port: 2222)
+let udpClientAddress = try Socket.Address("127.0.0.1", port: 3333)
+
+async.task {
+    do {
+        let socket = try Socket(type: .datagram, awaiter: async.awaiter)
+            .bind(to: udpServerAddress)
+
+        _ = try socket.send(bytes: hello, to: udpClientAddress)
+    } catch {
+        print("udp server socket error \(error)")
     }
 }
 
-async.loop.run()
+async.task {
+    do {
+        let socket = try Socket(type: .datagram, awaiter: async.awaiter)
+            .bind(to: udpClientAddress)
+
+        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        _ = try socket.receive(to: &buffer, from: udpServerAddress)
+
+        print("udp: \(String(cString: buffer))")
+    } catch {
+        print("udp client socket error \(error)")
+    }
+}
+```
+
+### TCP IPv6
+```swift
+async.task {
+    do {
+        let socket = try Socket(family: .inet6, awaiter: async.awaiter)
+            .bind(to: "::1", port: 4444)
+            .listen()
+
+        let client = try socket.accept()
+        _ = try client.send(bytes: hello)
+    } catch {
+        print("ip6 server socket error \(error)")
+    }
+}
+
+async.task {
+    do {
+        let socket = try Socket(family: .inet6, awaiter: async.awaiter)
+            .connect(to: "::1", port: 4444)
+
+        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        _ = try socket.receive(to: &buffer)
+
+        print("ip6: \(String(cString: buffer))")
+    } catch {
+        print("ip6 client socket error \(error)")
+    }
+}
+```
+
+### UNIX
+```swift
+#if os(Linux)
+let type: Socket.SocketType = .sequenced
+#else
+let type: Socket.SocketType = .stream
+#endif
+
+unlink("/tmp/socketexample.sock")
+
+async.task {
+    do {
+        let socket = try Socket(family: .unix, type: type, awaiter: async.awaiter)
+            .bind(to: "/tmp/socketexample.sock")
+            .listen()
+
+        let client = try socket.accept()
+        _ = try client.send(bytes: hello)
+    } catch {
+        print("unix server socket error \(error)")
+    }
+}
+
+async.task {
+    do {
+        let socket = try Socket(family: .unix, type: type, awaiter: async.awaiter)
+            .connect(to: "/tmp/socketexample.sock")
+
+        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        _ = try socket.receive(to: &buffer)
+
+        print("unix: \(String(cString: buffer))")
+    } catch {
+        print("unix client socket error \(error)")
+    }
+}
 ```
