@@ -41,7 +41,7 @@ final class Socket {
     func send(buffer: UnsafeRawPointer, count: Int, to: Address) throws -> Int
 
     func receive(buffer: UnsafeMutableRawPointer, count: Int) throws -> Int
-    func receive(buffer: UnsafeMutableRawPointer, count: Int, from: Address) throws -> Int
+    func receive(buffer: UnsafeMutableRawPointer, count: Int, from: inout Address?) throws -> Int
 }
 
 extension Socket
@@ -55,7 +55,7 @@ extension Socket
     func send(bytes: [UInt8], to: Address) throws -> Int
 
     func receive(to: inout [UInt8]) throws -> Int
-    func receive(to: inout [UInt8], from: Address) throws -> Int
+    func receive(to: inout [UInt8], from: inout Address?) throws -> Int
 }
 ```
 
@@ -77,10 +77,13 @@ let async = AsyncFiber()
 let socket = try Socket(awaiter: async.awaiter)
 ```
 
-### TCP
 ```swift
 let hello = [UInt8]("Hello, World!".utf8)
+let empty = [UInt8](repeating: 0, count: hello.count + 1)
+```
 
+### TCP
+```swift
 async.task {
     do {
         let socket = try Socket(awaiter: async.awaiter)
@@ -99,7 +102,7 @@ async.task {
         let socket = try Socket(awaiter: async.awaiter)
             .connect(to: "127.0.0.1", port: 1111)
 
-        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        var buffer = empty
         _ = try socket.receive(to: &buffer)
 
         print("tcp: \(String(cString: buffer))")
@@ -112,14 +115,16 @@ async.task {
 ### UDP
 ```swift
 let udpServerAddress = try Socket.Address("127.0.0.1", port: 2222)
-let udpClientAddress = try Socket.Address("127.0.0.1", port: 3333)
 
 async.task {
     do {
         let socket = try Socket(type: .datagram, awaiter: async.awaiter)
             .bind(to: udpServerAddress)
 
-        _ = try socket.send(bytes: hello, to: udpClientAddress)
+        var buffer = empty
+        var client: Socket.Address? = nil
+        _ = try socket.receive(to: &buffer, from: &client)
+        _ = try socket.send(bytes: hello, to: client!)
     } catch {
         print("udp server socket error \(error)")
     }
@@ -128,10 +133,10 @@ async.task {
 async.task {
     do {
         let socket = try Socket(type: .datagram, awaiter: async.awaiter)
-            .bind(to: udpClientAddress)
 
-        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
-        _ = try socket.receive(to: &buffer, from: udpServerAddress)
+        var buffer = empty
+        _ = try socket.send(bytes: hello, to: udpServerAddress)
+        _ = try socket.receive(to: &buffer)
 
         print("udp: \(String(cString: buffer))")
     } catch {
@@ -145,7 +150,7 @@ async.task {
 async.task {
     do {
         let socket = try Socket(family: .inet6, awaiter: async.awaiter)
-            .bind(to: "::1", port: 4444)
+            .bind(to: "::1", port: 3333)
             .listen()
 
         let client = try socket.accept()
@@ -158,9 +163,9 @@ async.task {
 async.task {
     do {
         let socket = try Socket(family: .inet6, awaiter: async.awaiter)
-            .connect(to: "::1", port: 4444)
+            .connect(to: "::1", port: 3333)
 
-        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        var buffer = empty
         _ = try socket.receive(to: &buffer)
 
         print("ip6: \(String(cString: buffer))")
@@ -198,7 +203,7 @@ async.task {
         let socket = try Socket(family: .unix, type: type, awaiter: async.awaiter)
             .connect(to: "/tmp/socketexample.sock")
 
-        var buffer = [UInt8](repeating: 0, count: hello.count + 1)
+        var buffer = empty
         _ = try socket.receive(to: &buffer)
 
         print("unix: \(String(cString: buffer))")

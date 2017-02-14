@@ -72,7 +72,7 @@ extension sockaddr_in {
     init(_ storage: sockaddr_storage) {
         var storage = storage
         var sockaddr = sockaddr_in()
-        memcpy(&sockaddr, &storage, Int(sockaddr.size))
+        memcpy(&sockaddr, &storage, Int(sockaddr_in.size))
         self = sockaddr
     }
 }
@@ -81,7 +81,7 @@ extension sockaddr_in6 {
     init(_ storage: sockaddr_storage) {
         var storage = storage
         var sockaddr = sockaddr_in6()
-        memcpy(&sockaddr, &storage, Int(sockaddr.size))
+        memcpy(&sockaddr, &storage, Int(sockaddr_in6.size))
         self = sockaddr
     }
 }
@@ -90,8 +90,14 @@ extension sockaddr_un {
     init(_ storage: sockaddr_storage) {
         var storage = storage
         var sockaddr = sockaddr_un()
-        memcpy(&sockaddr, &storage, Int(sockaddr.size))
+        memcpy(&sockaddr, &storage, Int(sockaddr_un.size))
         self = sockaddr
+    }
+}
+
+extension sockaddr_storage {
+    static var size: socklen_t {
+        return socklen_t(MemoryLayout<sockaddr_storage>.size)
     }
 }
 
@@ -115,7 +121,7 @@ extension sockaddr_in {
         set { self.sin_family = sa_family_t(newValue) }
     }
 
-    var size: socklen_t {
+    static var size: socklen_t {
         return socklen_t(MemoryLayout<sockaddr_in>.size)
     }
 
@@ -125,9 +131,12 @@ extension sockaddr_in {
             throw SocketError()
         }
         var sockaddr = sockaddr_in()
+    #if os(macOS)
+        sockaddr.sin_len = sa_family_t(MemoryLayout<sockaddr_in>.size)
+    #endif
+        sockaddr.family = AF_INET
         sockaddr.sin_addr = addr
         sockaddr.port = port
-        sockaddr.family = AF_INET
         self = sockaddr
     }
 }
@@ -154,7 +163,7 @@ extension sockaddr_in6 {
         set { self.sin6_family = sa_family_t(newValue) }
     }
 
-    var size: socklen_t {
+    static var size: socklen_t {
         return socklen_t(MemoryLayout<sockaddr_in6>.size)
     }
 
@@ -164,9 +173,12 @@ extension sockaddr_in6 {
             throw SocketError()
         }
         var sockaddr = sockaddr_in6()
+    #if os(macOS)
+        sockaddr.sin6_len = sa_family_t(MemoryLayout<sockaddr_in6>.size)
+    #endif
+        sockaddr.family = AF_INET6
         sockaddr.sin6_addr = addr
         sockaddr.port = port
-        sockaddr.family = AF_INET6
         self = sockaddr
     }
 }
@@ -187,7 +199,7 @@ extension sockaddr_un {
         set { self.sun_family = sa_family_t(newValue) }
     }
 
-    var size: socklen_t {
+    static var size: socklen_t {
         return socklen_t(MemoryLayout<sockaddr_un>.size)
     }
 
@@ -199,6 +211,9 @@ extension sockaddr_un {
             errno = EINVAL
             throw SocketError()
         }
+    #if os(macOS)
+        sockaddr.sun_len = sa_family_t(sockaddr_un.size)
+    #endif
         sockaddr.family = AF_UNIX
         memcpy(&sockaddr.sun_path, &bytes, bytes.count)
         self = sockaddr
