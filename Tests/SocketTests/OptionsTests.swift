@@ -8,18 +8,18 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
-import XCTest
+import Platform
 @testable import Socket
 
-class OptionsTests: XCTestCase {
+class OptionsTests: TestCase {
     func testReuseAddr() {
         do {
             let socket = try Socket()
             var options = socket.options
 
-            XCTAssertTrue(options.reuseAddr)
+            assertTrue(options.reuseAddr)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -32,7 +32,7 @@ class OptionsTests: XCTestCase {
             _ = try Socket()
                 .bind(to: "/tmp/unix1")
 
-            XCTFail("did not throw an error")
+            fail("did not throw an error")
         } catch {
             
         }
@@ -43,11 +43,11 @@ class OptionsTests: XCTestCase {
             let socket = try Socket()
             var options = socket.options
 
-            XCTAssertFalse(options.reusePort)
+            assertFalse(options.reusePort)
             options.reusePort = true
-            XCTAssertTrue(options.reusePort)
+            assertTrue(options.reusePort)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -56,10 +56,10 @@ class OptionsTests: XCTestCase {
             let socket = try Socket()
             var options = socket.options
         #if os(macOS)
-            XCTAssertTrue(options.noSignalPipe)
+            assertTrue(options.noSignalPipe)
         #endif
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -67,21 +67,19 @@ class OptionsTests: XCTestCase {
         do {
             let socket = try Socket().configure(reusePort: true)
 
-            XCTAssertTrue(socket.options.reuseAddr)
-            XCTAssertTrue(socket.options.reusePort)
+            assertTrue(socket.options.reuseAddr)
+            assertTrue(socket.options.reusePort)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
 
-    static var allTests : [(String, (OptionsTests) -> () throws -> Void)] {
-        return [
-            ("testReuseAddr", testReuseAddr),
-            ("testReuseAddrUnix", testReuseAddrUnix),
-            ("testReusePort", testReusePort),
-            ("testNoSignalPipe", testNoSignalPipe),
-            ("testConfigureReusePort", testConfigureReusePort),
-        ]
-    }
+    static var allTests = [
+        ("testReuseAddr", testReuseAddr),
+        ("testReuseAddrUnix", testReuseAddrUnix),
+        ("testReusePort", testReusePort),
+        ("testNoSignalPipe", testNoSignalPipe),
+        ("testConfigureReusePort", testConfigureReusePort),
+    ]
 }

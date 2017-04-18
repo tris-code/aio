@@ -8,11 +8,10 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
-import XCTest
 import Dispatch
 @testable import Socket
 
-class AddressTests: XCTestCase {
+class AddressTests: TestCase {
     func testIPv4() {
         do {
             let address = try Socket.Address(ip4: "127.0.0.1", port: 5000)
@@ -26,10 +25,10 @@ class AddressTests: XCTestCase {
             sockaddr.sin_port = UInt16(5000).byteSwapped
 
 
-            XCTAssertEqual(address, Socket.Address.ip4(sockaddr))
-            XCTAssertEqual(address.size, socklen_t(MemoryLayout<sockaddr_in>.size))
+            assertEqual(address, Socket.Address.ip4(sockaddr))
+            assertEqual(address.size, socklen_t(MemoryLayout<sockaddr_in>.size))
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -46,10 +45,10 @@ class AddressTests: XCTestCase {
             sockaddr.sin6_port = UInt16(5001).byteSwapped
 
 
-            XCTAssertEqual(address, Socket.Address.ip6(sockaddr))
-            XCTAssertEqual(address.size, socklen_t(MemoryLayout<sockaddr_in6>.size))
+            assertEqual(address, Socket.Address.ip6(sockaddr))
+            assertEqual(address.size, socklen_t(MemoryLayout<sockaddr_in6>.size))
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -71,10 +70,10 @@ class AddressTests: XCTestCase {
             sockaddr.family = AF_UNIX
             memcpy(&sockaddr.sun_path, &bytes, bytes.count)
 
-            XCTAssertEqual(address, Socket.Address.unix(sockaddr))
-            XCTAssertEqual(address.size, socklen_t(MemoryLayout<sockaddr_un>.size))
+            assertEqual(address, Socket.Address.unix(sockaddr))
+            assertEqual(address.size, socklen_t(MemoryLayout<sockaddr_un>.size))
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -83,9 +82,9 @@ class AddressTests: XCTestCase {
             let address = try Socket.Address(ip4: "127.0.0.1", port: 5002)
             let detected = try Socket.Address("127.0.0.1", port: 5002)
 
-            XCTAssertEqual(address, detected)
+            assertEqual(address, detected)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -94,9 +93,9 @@ class AddressTests: XCTestCase {
             let address = try Socket.Address(ip6: "::1", port: 5003)
             let detected = try Socket.Address("::1", port: 5003)
 
-            XCTAssertEqual(address, detected)
+            assertEqual(address, detected)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -106,9 +105,9 @@ class AddressTests: XCTestCase {
             let address = try Socket.Address(unix: "/tmp/testunixdetect")
             let detected = try Socket.Address("/tmp/testunixdetect")
 
-            XCTAssertEqual(address, detected)
+            assertEqual(address, detected)
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -127,7 +126,7 @@ class AddressTests: XCTestCase {
                 _ = try socket.accept()
                 done.wait()
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
 
@@ -147,11 +146,11 @@ class AddressTests: XCTestCase {
             sockaddr.sin_len = 16
         #endif
 
-            XCTAssertEqual(socket.selfAddress, Socket.Address.ip4(sockaddr))
+            assertEqual(socket.selfAddress, Socket.Address.ip4(sockaddr))
 
             done.signal()
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -170,7 +169,7 @@ class AddressTests: XCTestCase {
                 _ = try socket.accept()
                 done.wait()
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
 
@@ -190,10 +189,10 @@ class AddressTests: XCTestCase {
             sockaddr.sin_len = 16
         #endif
 
-            XCTAssertEqual(socket.peerAddress, Socket.Address.ip4(sockaddr))
+            assertEqual(socket.peerAddress, Socket.Address.ip4(sockaddr))
             done.signal()
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -212,7 +211,7 @@ class AddressTests: XCTestCase {
                 _ = try socket.accept()
                 done.wait()
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
 
@@ -232,10 +231,10 @@ class AddressTests: XCTestCase {
             sockaddr.sin6_len = 28
         #endif
 
-            XCTAssertEqual(socket.selfAddress, Socket.Address.ip6(sockaddr))
+            assertEqual(socket.selfAddress, Socket.Address.ip6(sockaddr))
             done.signal()
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
@@ -254,7 +253,7 @@ class AddressTests: XCTestCase {
                 _ = try socket.accept()
                 done.wait()
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
 
@@ -274,26 +273,24 @@ class AddressTests: XCTestCase {
             sockaddr.sin6_len = 28
         #endif
 
-            XCTAssertEqual(socket.peerAddress, Socket.Address.ip6(sockaddr))
+            assertEqual(socket.peerAddress, Socket.Address.ip6(sockaddr))
             done.signal()
         } catch {
-            XCTFail(String(describing: error))
+            fail(String(describing: error))
         }
     }
 
 
-    static var allTests : [(String, (AddressTests) -> () throws -> Void)] {
-        return [
-            ("testIPv4", testIPv4),
-            ("testIPv6", testIPv6),
-            ("testUnix", testUnix),
-            ("testIPv4Detect", testIPv4Detect),
-            ("testIPv6Detect", testIPv6Detect),
-            ("testUnixDetect", testIPv6Detect),
-            ("testLocalAddress", testLocalAddress),
-            ("testRemoteAddress", testRemoteAddress),
-            ("testLocal6Address", testLocal6Address),
-            ("testRemote6Address", testRemote6Address),
-        ]
-    }
+    static var allTests = [
+        ("testIPv4", testIPv4),
+        ("testIPv6", testIPv6),
+        ("testUnix", testUnix),
+        ("testIPv4Detect", testIPv4Detect),
+        ("testIPv6Detect", testIPv6Detect),
+        ("testUnixDetect", testIPv6Detect),
+        ("testLocalAddress", testLocalAddress),
+        ("testRemoteAddress", testRemoteAddress),
+        ("testLocal6Address", testLocal6Address),
+        ("testRemote6Address", testRemote6Address),
+    ]
 }

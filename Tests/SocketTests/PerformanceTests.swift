@@ -8,12 +8,11 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
-import XCTest
 import Platform
 import Dispatch
 @testable import Socket
 
-class PerformanceTests: XCTestCase {
+class PerformanceTests: TestCase {
     let message = [UInt8]("Hello, World!".utf8)
 
     var port: UInt16 = {
@@ -41,11 +40,11 @@ class PerformanceTests: XCTestCase {
                             _ = try client.send(bytes: buffer)
                         } while read > 0
                     } catch {
-                        XCTFail(String(describing: error))
+                        fail(String(describing: error))
                     }
                 }
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
 
@@ -63,15 +62,13 @@ class PerformanceTests: XCTestCase {
                     _ = try socket.receive(to: &response)
                 }
             } catch {
-                XCTFail(String(describing: error))
+                fail(String(describing: error))
             }
         }
     }
 
 
-    static var allTests : [(String, (PerformanceTests) -> () throws -> Void)] {
-        return [
-            ("testPerformance", testPerformance),
-        ]
-    }
+    static var allTests = [
+        ("testPerformance", testPerformance),
+    ]
 }
