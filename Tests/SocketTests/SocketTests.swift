@@ -8,6 +8,7 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
+import Platform
 import Dispatch
 @testable import Socket
 
@@ -304,7 +305,7 @@ class SocketTests: TestCase {
         unlink("/tmp/testsequenced.sock")
         DispatchQueue.global().async {
             do {
-                let socket = try Socket(family: .unix, type: .sequenced)
+                let socket = try Socket(family: .local, type: .sequenced)
                     .bind(to: "/tmp/testsequenced.sock")
                     .listen()
 
@@ -322,7 +323,7 @@ class SocketTests: TestCase {
         ready.wait()
 
         do {
-            let socket = try Socket(family: .unix, type: .sequenced)
+            let socket = try Socket(family: .local, type: .sequenced)
                 .connect(to: "/tmp/testsequenced.sock")
 
             let written = try socket.send(bytes: message)
