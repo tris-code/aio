@@ -10,7 +10,7 @@
 
 import Platform
 import Dispatch
-@testable import Socket
+@testable import Network
 
 class SocketTests: TestCase {
     func testSocket() {

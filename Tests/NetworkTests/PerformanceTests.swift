@@ -10,7 +10,7 @@
 
 import Platform
 import Dispatch
-@testable import Socket
+@testable import Network
 
 class PerformanceTests: TestCase {
     let message = [UInt8]("Hello, World!".utf8)

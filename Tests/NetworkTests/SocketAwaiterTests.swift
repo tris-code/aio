@@ -10,7 +10,7 @@
 
 import Platform
 import Dispatch
-@testable import Socket
+@testable import Network
 import struct Foundation.Date
 
 class SocketAwaiterTests: TestCase {

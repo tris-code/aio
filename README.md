@@ -1,11 +1,11 @@
-# Socket
+# Network
 
 Zero-cost socket abstraction with optional non-blocking awaiter designed for cooperative multitasking.
 
 ## Package.swift
 
  ```swift
-.Package(url: "https://github.com/tris-foundation/socket.git", majorVersion: 0)
+.Package(url: "https://github.com/tris-foundation/network.git", majorVersion: 0)
 ```
 
 ## Memo

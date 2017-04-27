@@ -9,7 +9,7 @@
  */
 
 import XCTest
-@testable import SocketTests
+@testable import NetworkTests
 
 XCTMain([
      testCase(SocketTests.allTests),

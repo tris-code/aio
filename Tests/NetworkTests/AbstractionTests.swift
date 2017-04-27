@@ -9,7 +9,7 @@
  */
 
 import Platform
-@testable import Socket
+@testable import Network
 
 class AbstractionTests: TestCase {
     func testFamily() {
