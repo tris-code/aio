@@ -18,4 +18,6 @@ XCTMain([
      testCase(AbstractionTests.allTests),
      testCase(SocketAwaiterTests.allTests),
      testCase(PerformanceTests.allTests),
+     testCase(DNSMessageTests.allTests),
+     testCase(DNSTests.allTests),
 ])
