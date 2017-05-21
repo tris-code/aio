@@ -8,8 +8,10 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
+import Test
 import Dispatch
 @testable import Network
+
 import struct Foundation.Date
 
 class DNSTests: TestCase {

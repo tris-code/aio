@@ -152,7 +152,7 @@ public final class Socket {
     }
 
     @inline(__always)
-    func repeatWhileInterrupted(_ task: (Void) throws -> Int) throws -> Int {
+    func repeatWhileInterrupted(_ task: () throws -> Int) throws -> Int {
         var result = 0
         while true {
             result = try task()
