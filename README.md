@@ -5,7 +5,7 @@ Zero-cost socket abstraction with optional non-blocking awaiter designed for coo
 ## Package.swift
 
  ```swift
-.Package(url: "https://github.com/tris-foundation/network.git", majorVersion: 0)
+.Package(url: "https://github.com/tris-foundation/network.git", majorVersion: 0, minor: 3)
 ```
 
 ## Memo
@@ -23,7 +23,7 @@ final class Socket {
     enum Address {
         init(_: String, port: UInt16? = nil) throws
         init(ip4: String, port: UInt16) throws
-        init(ip6: String, port: UInt16) throws 
+        init(ip6: String, port: UInt16) throws
         init(unix: String) throws
     }
 
