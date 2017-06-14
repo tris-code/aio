@@ -71,7 +71,7 @@ public final class Socket {
     }
 
     deinit {
-        try? close(silent: true)
+        try? close()
     }
 
     @discardableResult
@@ -112,7 +112,7 @@ public final class Socket {
         return self
     }
 
-    public func close(silent: Bool = false) throws {
+    public func close() throws {
         _ = try repeatWhileInterrupted {
             return Int(Platform.close(descriptor))
         }
