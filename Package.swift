@@ -36,8 +36,8 @@ let package = Package(
     ]
 )
 
-import class Foundation.ProcessInfo
-if ProcessInfo.processInfo.environment["Development"] == "true" {
+//import class Foundation.ProcessInfo
+//if ProcessInfo.processInfo.environment["Development"] == "true" {
     package.dependencies.append(
         .package(
             url: "https://github.com/tris-foundation/stream.git",
@@ -48,4 +48,4 @@ if ProcessInfo.processInfo.environment["Development"] == "true" {
         .first(where: { $0.name == "Network" })?
         .dependencies
         .append("Stream")
-}
+//}
