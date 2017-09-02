@@ -36,8 +36,13 @@ let package = Package(
     ]
 )
 
-//import class Foundation.ProcessInfo
-//if ProcessInfo.processInfo.environment["Development"] == "true" {
+#if os(macOS)
+    import Darwin.C
+#else
+    import Glibc
+#endif
+
+if getenv("Tris.Stream") != nil || getenv("Development") != nil {
     package.dependencies.append(
         .package(
             url: "https://github.com/tris-foundation/stream.git",
@@ -48,4 +53,4 @@ let package = Package(
         .first(where: { $0.name == "Network" })?
         .dependencies
         .append("Stream")
-//}
+}
