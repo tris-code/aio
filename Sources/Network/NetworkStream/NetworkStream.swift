@@ -8,7 +8,6 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
-#if canImport(Stream)
 import Stream
 
 public class NetworkStream: Stream {
@@ -26,4 +25,3 @@ public class NetworkStream: Stream {
         return try socket.send(bytes: bytes.baseAddress!, count: bytes.count)
     }
 }
-#endif

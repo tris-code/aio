@@ -19,38 +19,19 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/tris-foundation/platform.git",
-            from: "0.4.0"
-        ),
+            from: "0.4.0"),
         .package(
             url: "https://github.com/tris-foundation/async.git",
-            from: "0.4.0"
-        ),
+            from: "0.4.0"),
+        .package(
+            url: "https://github.com/tris-foundation/stream.git",
+            from: "0.4.0"),
         .package(
             url: "https://github.com/tris-foundation/test.git",
-            from: "0.4.0"
-        )
+            from: "0.4.0")
     ],
     targets: [
-        .target(name: "Network", dependencies: ["Async"]),
+        .target(name: "Network", dependencies: ["Async", "Stream"]),
         .testTarget(name: "NetworkTests", dependencies: ["Network", "Test"])
     ]
 )
-
-#if os(macOS)
-    import Darwin.C
-#else
-    import Glibc
-#endif
-
-if getenv("Tris.Stream") != nil || getenv("Development") != nil {
-    package.dependencies.append(
-        .package(
-            url: "https://github.com/tris-foundation/stream.git",
-            from: "0.4.0")
-    )
-
-    package.targets
-        .first(where: { $0.name == "Network" })?
-        .dependencies
-        .append("Stream")
-}
