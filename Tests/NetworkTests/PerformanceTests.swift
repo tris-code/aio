@@ -14,6 +14,12 @@ import Dispatch
 @testable import Network
 
 class PerformanceTests: TestCase {
+    override func setUp() {
+        if async == nil {
+            TestAsync().registerGlobal()
+        }
+    }
+
     let message = [UInt8]("Hello, World!".utf8)
 
     var port: UInt16 = {
@@ -21,7 +27,7 @@ class PerformanceTests: TestCase {
     }()
 
     func testPerformance() {
-        let ready = AtomicCondition()
+        let ready = DispatchSemaphore(value: 0)
 
         DispatchQueue.global().async {
             do {

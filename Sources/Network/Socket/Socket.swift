@@ -29,15 +29,6 @@ public final class Socket {
     public private(set) var family: Family
     public private(set) var type: SocketType
 
-    public var awaiter: IOAwaiter? {
-        didSet {
-            switch awaiter {
-            case .some: noDelay = true
-            case .none: noDelay = false
-            }
-        }
-    }
-
     public var noDelay: Bool {
         get {
             return descriptor.status & O_NONBLOCK != 0
@@ -53,9 +44,9 @@ public final class Socket {
     public init(
         descriptor: Int32? = nil,
         family: Family = .inet,
-        type: SocketType = .stream,
-        awaiter: IOAwaiter? = nil
+        type: SocketType = .stream
     ) throws {
+        precondition(async != nil, "async system is not registered")
         let descriptor = descriptor ?? socket(family.rawValue, type.rawValue, 0)
         guard descriptor > 0 else {
             throw SocketError()
@@ -68,11 +59,7 @@ public final class Socket {
         self.options.noSignalPipe = true
     #endif
         self.options.reuseAddr = true
-
-        if awaiter != nil {
-            self.awaiter = awaiter
-            self.noDelay = true
-        }
+        self.noDelay = true
     }
 
     deinit {
@@ -99,14 +86,10 @@ public final class Socket {
 
     public func accept(deadline: Date = Date.distantFuture) throws -> Socket {
         let client = try repeatWhileInterrupted {
-            try awaiter?.wait(for: descriptor, event: .read, deadline: deadline)
+            try async.wait(for: descriptor, event: .read, deadline: deadline)
             return Int(Platform.accept(descriptor, nil, nil))
         }
-        return try Socket(
-            descriptor: Int32(client),
-            family: family,
-            type: type,
-            awaiter: awaiter)
+        return try Socket(descriptor: Int32(client), family: family, type: type)
     }
 
     @discardableResult
@@ -121,10 +104,7 @@ public final class Socket {
                     descriptor, rebounded(&copy), address.size))
             }
         } catch let error as SocketError where error.number == EINPROGRESS {
-            try awaiter?.wait(
-                for: descriptor,
-                event: .write,
-                deadline: deadline)
+            try async.wait(for: descriptor, event: .write, deadline: deadline)
         }
         return self
     }
@@ -141,10 +121,7 @@ public final class Socket {
         deadline: Date = Date.distantFuture
     ) throws -> Int {
         return try repeatWhileInterrupted {
-            try awaiter?.wait(
-                for: descriptor,
-                event: .write,
-                deadline: deadline)
+            try async.wait(for: descriptor, event: .write, deadline: deadline)
             return Platform.send(descriptor, bytes, count, noSignal)
         }
     }
@@ -155,7 +132,7 @@ public final class Socket {
         deadline: Date = Date.distantFuture
     ) throws -> Int {
         return try repeatWhileInterrupted {
-            try awaiter?.wait(for: descriptor, event: .read, deadline: deadline)
+            try async.wait(for: descriptor, event: .read, deadline: deadline)
             return Platform.recv(descriptor, buffer, count, 0)
         }
     }
@@ -168,10 +145,7 @@ public final class Socket {
     ) throws -> Int {
         var copy = address
         return try repeatWhileInterrupted {
-            try awaiter?.wait(
-                for: descriptor,
-                event: .write,
-                deadline: deadline)
+            try async.wait(for: descriptor, event: .write, deadline: deadline)
             return Platform.sendto(
                 descriptor,
                 bytes,
@@ -191,7 +165,7 @@ public final class Socket {
         var storage = sockaddr_storage()
         var size = sockaddr_storage.size
         let received = try repeatWhileInterrupted {
-            try awaiter?.wait(for: descriptor, event: .read, deadline: deadline)
+            try async.wait(for: descriptor, event: .read, deadline: deadline)
             return Platform.recvfrom(
                 descriptor, buffer, count, 0, rebounded(&storage), &size)
         }
