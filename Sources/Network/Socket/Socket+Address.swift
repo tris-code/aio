@@ -9,6 +9,7 @@
  */
 
 import Platform
+import struct Foundation.Date
 
 extension Socket {
     public enum Address {
@@ -67,14 +68,22 @@ extension Socket.Address {
                 self = ip6
                 return
             }
+
+            let entries = try DNS.resolve(
+                domain: address,
+                type: .a,
+                deadline: Date.distantFuture)
+
+            if let address = entries.first, case .v4(let ip) = address {
+                self = .ip4(try sockaddr_in(ip.address, port))
+                return
+            }
         }
 
         if let unix = try? Socket.Address(unix: address) {
             self = unix
             return
         }
-
-        // TODO: resolve domain
 
         errno = EINVAL
         throw SocketError()
