@@ -17,7 +17,7 @@ import struct Foundation.Date
 class DNSTests: TestCase {
     func testMakeRequest() {
         do {
-            let query = Message(resolve: "duckduckgo.com", type: .a)
+            let query = Message(domain: "duckduckgo.com", type: .a)
             let response = try DNS.makeRequest(query: query)
 
             let addresses: [ResourceData] = [
@@ -75,7 +75,7 @@ class DNSTests: TestCase {
     }
 
     func testPerformance() {
-        let query = Message(resolve: "duckduckgo.com", type: .a)
+        let query = Message(domain: "duckduckgo.com", type: .a)
 
         measure {
             do {
