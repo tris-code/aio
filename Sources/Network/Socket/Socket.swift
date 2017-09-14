@@ -41,16 +41,22 @@ public final class Socket {
         }
     }
 
-    public init(
-        descriptor: Int32? = nil,
+    public convenience init(
         family: Family = .inet,
         type: SocketType = .stream
     ) throws {
-        precondition(async != nil, "async system is not registered")
-        let descriptor = descriptor ?? socket(family.rawValue, type.rawValue, 0)
-        guard descriptor > 0 else {
+        let fd = socket(family.rawValue, type.rawValue, 0)
+        guard let descriptor = Descriptor(rawValue: fd) else {
             throw SocketError()
         }
+        try self.init(descriptor: descriptor, family: family, type: type)
+    }
+
+    private init(
+        descriptor: Descriptor,
+        family: Family = .inet,
+        type: SocketType = .stream
+    ) throws {
         self.type = type
         self.family = family
         self.descriptor = descriptor
@@ -70,7 +76,7 @@ public final class Socket {
     public func bind(to address: Address) throws -> Self {
         var copy = address
         guard Platform.bind(
-            descriptor, rebounded(&copy), address.size) != -1 else {
+            descriptor.rawValue, rebounded(&copy), address.size) != -1 else {
                 throw SocketError()
         }
         return self
@@ -78,7 +84,7 @@ public final class Socket {
 
     @discardableResult
     public func listen() throws -> Self {
-        guard Platform.listen(descriptor, backlog) != -1 else {
+        guard Platform.listen(descriptor.rawValue, backlog) != -1 else {
             throw SocketError()
         }
         return self
@@ -87,9 +93,12 @@ public final class Socket {
     public func accept(deadline: Date = Date.distantFuture) throws -> Socket {
         let client = try repeatWhileInterrupted {
             try async.wait(for: descriptor, event: .read, deadline: deadline)
-            return Int(Platform.accept(descriptor, nil, nil))
+            return Int(Platform.accept(descriptor.rawValue, nil, nil))
         }
-        return try Socket(descriptor: Int32(client), family: family, type: type)
+        guard let descriptor = Descriptor(rawValue: Int32(client)) else {
+            throw SocketError()
+        }
+        return try Socket(descriptor: descriptor, family: family, type: type)
     }
 
     @discardableResult
@@ -101,7 +110,7 @@ public final class Socket {
         do {
             _ = try repeatWhileInterrupted {
                 return Int(Platform.connect(
-                    descriptor, rebounded(&copy), address.size))
+                    descriptor.rawValue, rebounded(&copy), address.size))
             }
         } catch let error as SocketError where error.number == EINPROGRESS {
             try async.wait(for: descriptor, event: .write, deadline: deadline)
@@ -111,7 +120,7 @@ public final class Socket {
 
     public func close() throws {
         _ = try repeatWhileInterrupted {
-            return Int(Platform.close(descriptor))
+            return Int(Platform.close(descriptor.rawValue))
         }
     }
 
@@ -122,7 +131,7 @@ public final class Socket {
     ) throws -> Int {
         return try repeatWhileInterrupted {
             try async.wait(for: descriptor, event: .write, deadline: deadline)
-            return Platform.send(descriptor, bytes, count, noSignal)
+            return Platform.send(descriptor.rawValue, bytes, count, noSignal)
         }
     }
 
@@ -133,7 +142,7 @@ public final class Socket {
     ) throws -> Int {
         return try repeatWhileInterrupted {
             try async.wait(for: descriptor, event: .read, deadline: deadline)
-            return Platform.recv(descriptor, buffer, count, 0)
+            return Platform.recv(descriptor.rawValue, buffer, count, 0)
         }
     }
 
@@ -147,7 +156,7 @@ public final class Socket {
         return try repeatWhileInterrupted {
             try async.wait(for: descriptor, event: .write, deadline: deadline)
             return Platform.sendto(
-                descriptor,
+                descriptor.rawValue,
                 bytes,
                 count,
                 noSignal,
@@ -167,7 +176,12 @@ public final class Socket {
         let received = try repeatWhileInterrupted {
             try async.wait(for: descriptor, event: .read, deadline: deadline)
             return Platform.recvfrom(
-                descriptor, buffer, count, 0, rebounded(&storage), &size)
+                descriptor.rawValue,
+                buffer,
+                count,
+                0,
+                rebounded(&storage),
+                &size)
         }
         address = Address(storage)
         return received
