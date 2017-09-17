@@ -29,7 +29,7 @@ public final class Socket {
     public private(set) var family: Family
     public private(set) var type: SocketType
 
-    public var noDelay: Bool {
+    public var nonBlock: Bool {
         get {
             return descriptor.status & O_NONBLOCK != 0
         }
@@ -65,7 +65,7 @@ public final class Socket {
         self.options.noSignalPipe = true
     #endif
         self.options.reuseAddr = true
-        self.noDelay = true
+        self.nonBlock = true
     }
 
     deinit {
