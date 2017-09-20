@@ -11,13 +11,12 @@
 import Test
 import Platform
 import Dispatch
+import AsyncDispatch
 @testable import Network
 
 class AddressTests: TestCase {
     override func setUp() {
-        if async == nil {
-            TestAsync().registerGlobal()
-        }
+        AsyncDispatch().registerGlobal()
     }
 
     func testIPv4() {

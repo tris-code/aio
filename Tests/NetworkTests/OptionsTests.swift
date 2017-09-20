@@ -10,13 +10,12 @@
 
 import Test
 import Platform
+import AsyncDispatch
 @testable import Network
 
 class OptionsTests: TestCase {
     override func setUp() {
-        if async == nil {
-            TestAsync().registerGlobal()
-        }
+        AsyncDispatch().registerGlobal()
     }
 
     func testReuseAddr() {

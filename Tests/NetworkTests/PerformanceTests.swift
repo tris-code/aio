@@ -11,13 +11,12 @@
 import Test
 import Platform
 import Dispatch
+import AsyncDispatch
 @testable import Network
 
 class PerformanceTests: TestCase {
     override func setUp() {
-        if async == nil {
-            TestAsync().registerGlobal()
-        }
+        AsyncDispatch().registerGlobal()
     }
 
     let message = [UInt8]("Hello, World!".utf8)
