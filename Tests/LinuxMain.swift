@@ -12,11 +12,13 @@ import XCTest
 @testable import NetworkTests
 
 XCTMain([
-     testCase(SocketTests.allTests),
-     testCase(AddressTests.allTests),
-     testCase(OptionsTests.allTests),
-     testCase(AbstractionTests.allTests),
-     testCase(PerformanceTests.allTests),
-     testCase(DNSMessageTests.allTests),
-     testCase(DNSTests.allTests),
+    testCase(IPTests.allTests),
+    testCase(SocketTests.allTests),
+    testCase(AddressTests.allTests),
+    testCase(OptionsTests.allTests),
+    testCase(AbstractionTests.allTests),
+    testCase(PerformanceTests.allTests),
+    testCase(DNSMessageTests.allTests),
+    testCase(DNSTests.allTests),
+    testCase(NetworkStreamTests.allTests),
 ])

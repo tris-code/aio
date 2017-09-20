@@ -321,6 +321,7 @@ class AddressTests: TestCase {
         ("testIPv4Detect", testIPv4Detect),
         ("testIPv6Detect", testIPv6Detect),
         ("testUnixDetect", testIPv6Detect),
+        ("testIP4DNSResolve", testIP4DNSResolve),
         ("testLocalAddress", testLocalAddress),
         ("testRemoteAddress", testRemoteAddress),
         ("testLocal6Address", testLocal6Address),
