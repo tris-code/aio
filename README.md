@@ -44,7 +44,7 @@ final class Socket {
     func receive(buffer: UnsafeMutableRawPointer, count: Int, from: inout Address?) throws -> Int
 }
 
-extension Socket
+extension Socket {
     func bind(to: String, port: UInt16) throws -> Socket
     func bind(to: String) throws -> Socket
 
