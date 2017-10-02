@@ -80,6 +80,16 @@ class OptionsTests: TestCase {
         }
     }
 
+    func testConfigureBroadcast() {
+        do {
+            let socket = try Socket().configure { $0.broadcast = true }
+
+            assertTrue(socket.options.broadcast)
+        } catch {
+            fail(String(describing: error))
+        }
+    }
+
 
     static var allTests = [
         ("testReuseAddr", testReuseAddr),
@@ -87,5 +97,6 @@ class OptionsTests: TestCase {
         ("testReusePort", testReusePort),
         ("testNoSignalPipe", testNoSignalPipe),
         ("testConfigureReusePort", testConfigureReusePort),
+        ("testConfigureBroadcast", testConfigureBroadcast),
     ]
 }
