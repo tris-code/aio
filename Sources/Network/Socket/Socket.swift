@@ -18,7 +18,7 @@ public final class Socket {
         case local, inet, inet6
     }
 
-    public enum SocketType {
+    public enum `Type` {
         case stream, datagram, sequenced, raw
     }
 
@@ -34,7 +34,7 @@ public final class Socket {
     public private(set) var descriptor: Descriptor
     public internal(set) var options: Options
     public private(set) var family: Family
-    public private(set) var type: SocketType
+    public private(set) var type: Type
 
     public var nonBlock: Bool {
         get {
@@ -50,7 +50,7 @@ public final class Socket {
 
     public convenience init(
         family: Family = .inet,
-        type: SocketType = .stream
+        type: Type = .stream
     ) throws {
         let fd = socket(family.rawValue, type.rawValue, 0)
         guard let descriptor = Descriptor(rawValue: fd) else {
@@ -62,7 +62,7 @@ public final class Socket {
     private init(
         descriptor: Descriptor,
         family: Family = .inet,
-        type: SocketType = .stream
+        type: Type = .stream
     ) throws {
         self.type = type
         self.family = family
