@@ -26,11 +26,11 @@ extension Socket {
             self.descriptor = descriptor
         }
 
-        func get(_ option: Option) throws -> Bool {
+        public func get(_ option: Option) throws -> Bool {
             return try getValue(for: option.rawValue)
         }
 
-        func set(_ option: Option, _ value: Bool) throws {
+        public func set(_ option: Option, _ value: Bool) throws {
             try setValue(value, for: option.rawValue)
         }
 
