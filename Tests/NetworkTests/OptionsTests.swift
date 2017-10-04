@@ -21,9 +21,7 @@ class OptionsTests: TestCase {
     func testReuseAddr() {
         do {
             let socket = try Socket()
-            var options = socket.options
-
-            assertTrue(options.reuseAddr)
+            assertTrue(try socket.options.get(.reuseAddr))
         } catch {
             fail(String(describing: error))
         }
@@ -47,11 +45,9 @@ class OptionsTests: TestCase {
     func testReusePort() {
         do {
             let socket = try Socket()
-            var options = socket.options
-
-            assertFalse(options.reusePort)
-            options.reusePort = true
-            assertTrue(options.reusePort)
+            assertFalse(try socket.options.get(.reusePort))
+            assertNoThrow(try socket.options.set(.reusePort, true))
+            assertTrue(try socket.options.get(.reusePort))
         } catch {
             fail(String(describing: error))
         }
@@ -60,9 +56,8 @@ class OptionsTests: TestCase {
     func testNoSignalPipe() {
         do {
             let socket = try Socket()
-            var options = socket.options
         #if os(macOS)
-            assertTrue(options.noSignalPipe)
+            assertTrue(try socket.options.get(.noSignalPipe))
         #endif
         } catch {
             fail(String(describing: error))
@@ -71,10 +66,12 @@ class OptionsTests: TestCase {
 
     func testConfigureReusePort() {
         do {
-            let socket = try Socket().configure { $0.reusePort = true }
+            let socket = try Socket().configure { options in
+                try options.set(.reusePort, true)
+            }
 
-            assertTrue(socket.options.reuseAddr)
-            assertTrue(socket.options.reusePort)
+            assertTrue(try socket.options.get(.reuseAddr))
+            assertTrue(try socket.options.get(.reusePort))
         } catch {
             fail(String(describing: error))
         }
@@ -82,9 +79,11 @@ class OptionsTests: TestCase {
 
     func testConfigureBroadcast() {
         do {
-            let socket = try Socket().configure { $0.broadcast = true }
+            let socket = try Socket().configure { options in
+                try options.set(.broadcast, true)
+            }
 
-            assertTrue(socket.options.broadcast)
+            assertTrue(try socket.options.get(.broadcast))
         } catch {
             fail(String(describing: error))
         }
