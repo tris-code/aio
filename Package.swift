@@ -31,7 +31,7 @@ let package = Package(
             from: "0.4.0")
     ],
     targets: [
-        .target(name: "Network", dependencies: ["Async", "Stream"]),
+        .target(name: "Network", dependencies: ["Platform", "Async", "Stream"]),
         .testTarget(
             name: "NetworkTests",
             dependencies: ["Network", "AsyncDispatch", "Test"])
