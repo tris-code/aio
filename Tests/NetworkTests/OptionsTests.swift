@@ -38,7 +38,7 @@ class OptionsTests: TestCase {
 
             fail("did not throw an error")
         } catch {
-            
+
         }
     }
 

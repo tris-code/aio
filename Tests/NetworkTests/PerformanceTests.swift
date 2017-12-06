@@ -21,8 +21,8 @@ class PerformanceTests: TestCase {
 
     let message = [UInt8]("Hello, World!".utf8)
 
-    var port: UInt16 = {
-        return UInt16(arc4random_uniform(64_000)) + 1_500
+    var port = {
+        return Int(arc4random_uniform(64_000)) + 1_500
     }()
 
     func testPerformance() {
