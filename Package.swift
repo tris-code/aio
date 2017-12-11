@@ -19,16 +19,16 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/tris-foundation/platform.git",
-            from: "0.4.0"),
+            .branch("master")),
         .package(
             url: "https://github.com/tris-foundation/async.git",
-            from: "0.4.0"),
+            .branch("master")),
         .package(
             url: "https://github.com/tris-foundation/stream.git",
-            from: "0.4.0"),
+            .branch("master")),
         .package(
             url: "https://github.com/tris-foundation/test.git",
-            from: "0.4.0")
+            .branch("master"))
     ],
     targets: [
         .target(name: "Network", dependencies: ["Platform", "Async", "Stream"]),
