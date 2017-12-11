@@ -5,7 +5,7 @@ Zero-cost socket abstraction with optional non-blocking awaiter designed for coo
 ## Package.swift
 
  ```swift
-.package(url: "https://github.com/tris-foundation/network.git", from: "0.4.0")
+.package(url: "https://github.com/tris-foundation/network.git", .branch("master"))
 ```
 
 ## Memo
