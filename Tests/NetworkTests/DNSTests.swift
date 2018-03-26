@@ -79,11 +79,4 @@ class DNSTests: TestCase {
             }
         }
     }
-
-
-    static var allTests = [
-        ("testMakeRequest", testMakeRequest),
-        ("testResolve", testResolve),
-        ("testPerformance", testPerformance),
-    ]
 }

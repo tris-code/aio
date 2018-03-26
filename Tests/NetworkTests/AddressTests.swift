@@ -309,19 +309,4 @@ class AddressTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-
-    static var allTests = [
-        ("testIPv4", testIPv4),
-        ("testIPv6", testIPv6),
-        ("testUnix", testUnix),
-        ("testIPv4Detect", testIPv4Detect),
-        ("testIPv6Detect", testIPv6Detect),
-        ("testUnixDetect", testIPv6Detect),
-        ("testIP4DNSResolve", testIP4DNSResolve),
-        ("testLocalAddress", testLocalAddress),
-        ("testRemoteAddress", testRemoteAddress),
-        ("testLocal6Address", testLocal6Address),
-        ("testRemote6Address", testRemote6Address),
-    ]
 }

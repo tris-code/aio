@@ -35,11 +35,4 @@ class IPTests: TestCase {
         case .v6(let ip6): assertTrue(type(of: ip6) == IPv6.self)
         }
     }
-
-
-    static var allTests = [
-        ("testIPv4", testIPv4),
-        ("testIPv6", testIPv6),
-        ("testIPAddress", testIPAddress),
-    ]
 }

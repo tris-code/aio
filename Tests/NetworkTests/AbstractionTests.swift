@@ -28,10 +28,4 @@ class AbstractionTests: TestCase {
         assertEqual(rawValue(of: .sequenced), SOCK_SEQPACKET)
         assertEqual(rawValue(of: .raw), SOCK_RAW)
     }
-
-
-    static var allTests = [
-        ("testFamily", testFamily),
-        ("testSocketType", testSocketType),
-    ]
 }

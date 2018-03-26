@@ -74,9 +74,4 @@ class PerformanceTests: TestCase {
             }
         }
     }
-
-
-    static var allTests = [
-        ("testPerformance", testPerformance),
-    ]
 }

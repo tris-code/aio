@@ -346,16 +346,4 @@ class SocketTests: TestCase {
         }
     #endif
     }
-
-
-    static var allTests = [
-        ("testSocket", testSocket),
-        ("testSocketInetStream", testSocketInetStream),
-        ("testSocketInetDatagram", testSocketInetDatagram),
-        ("testSocketInet6Stream", testSocketInet6Stream),
-        ("testSocketInet6Datagram", testSocketInet6Stream),
-        ("testSocketUnixStream", testSocketUnixStream),
-        ("testSocketUnixDatagram", testSocketUnixDatagram),
-        ("testSocketUnixSequenced", testSocketUnixSequenced),
-    ]
 }

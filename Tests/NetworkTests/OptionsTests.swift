@@ -90,14 +90,4 @@ class OptionsTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-
-    static var allTests = [
-        ("testReuseAddr", testReuseAddr),
-        ("testReuseAddrUnix", testReuseAddrUnix),
-        ("testReusePort", testReusePort),
-        ("testNoSignalPipe", testNoSignalPipe),
-        ("testConfigureReusePort", testConfigureReusePort),
-        ("testConfigureBroadcast", testConfigureBroadcast),
-    ]
 }

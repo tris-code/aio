@@ -79,9 +79,4 @@ class NetworkStreamTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-    static var allTests = [
-        ("testNetworkStream", testNetworkStream),
-        ("testNetworkStreamError", testNetworkStreamError),
-    ]
 }

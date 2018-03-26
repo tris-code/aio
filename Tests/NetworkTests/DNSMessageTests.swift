@@ -151,10 +151,4 @@ class DNSMessageTests: TestCase {
             fail(String(describing: error))
         }
     }
-
-
-    static var allTests = [
-        ("testRequest", testRequest),
-        ("testResponse", testResponse),
-    ]
 }
