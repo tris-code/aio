@@ -1,12 +1,16 @@
-# Network
+# AIO
 
-Zero-cost socket abstraction with optional non-blocking awaiter designed for cooperative multitasking.
+Asynchronous non-blocking io with syncronous API. **No callbacks.**
 
 ## Package.swift
 
  ```swift
-.package(url: "https://github.com/tris-foundation/network.git", .branch("master"))
+.package(url: "https://github.com/tris-foundation/aio.git", .branch("master"))
 ```
+
+# Network
+
+Zero-cost socket abstraction with optional non-blocking awaiter designed for cooperative multitasking.
 
 ## Memo
 
