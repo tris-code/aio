@@ -9,7 +9,6 @@
  */
 
 import Test
-import Dispatch
 @testable import Network
 
 class DNSMessageTests: TestCase {
@@ -19,7 +18,7 @@ class DNSMessageTests: TestCase {
                               0x6b, 0x64, 0x75, 0x63, 0x6b, 0x67, 0x6f, 0x03,
                               0x63, 0x6f, 0x6d, 0x00, 0x00, 0x01, 0x00, 0x01]
 
-        do {
+        scope {
             let message = try Message(from: bytes)
             assertEqual(message.id, 0xeef7)
             assertEqual(message.type, .query)
@@ -37,8 +36,6 @@ class DNSMessageTests: TestCase {
             assertEqual(message.additional, [ResourceRecord]())
 
             assertEqual(message.bytes, bytes)
-        } catch {
-            fail(String(describing: error))
         }
     }
 
@@ -73,7 +70,7 @@ class DNSMessageTests: TestCase {
                               0x00, 0x01, 0x00, 0x01, 0x51, 0x80, 0x00, 0x06,
                               0x03, 0x6e, 0x73, 0x31, 0xc0, 0x90]
 
-        do {
+        scope {
             let message = try Message(from: bytes)
             assertEqual(message.id, 0xeef7)
             assertEqual(message.type, .response)
@@ -147,8 +144,6 @@ class DNSMessageTests: TestCase {
                 )
             ])
             assertEqual(message.additional, [ResourceRecord]())
-        } catch {
-            fail(String(describing: error))
         }
     }
 }

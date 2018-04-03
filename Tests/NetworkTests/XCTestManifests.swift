@@ -64,12 +64,6 @@ extension OptionsTests {
     ]
 }
 
-extension PerformanceTests {
-    static let __allTests = [
-        ("testPerformance", testPerformance),
-    ]
-}
-
 extension SocketTests {
     static let __allTests = [
         ("testSocket", testSocket),
@@ -93,7 +87,6 @@ public func __allTests() -> [XCTestCaseEntry] {
         testCase(IPTests.__allTests),
         testCase(NetworkStreamTests.__allTests),
         testCase(OptionsTests.__allTests),
-        testCase(PerformanceTests.__allTests),
         testCase(SocketTests.__allTests),
     ]
 }
