@@ -10,7 +10,7 @@ Asynchronous non-blocking io with syncronous API. **No callbacks.**
 
 # Network
 
-Zero-cost socket abstraction with optional non-blocking awaiter designed for cooperative multitasking.
+Zero-cost socket abstraction designed for cooperative multitasking.
 
 ## Memo
 
@@ -31,7 +31,7 @@ final class Socket {
         init(unix: String) throws
     }
 
-    init(descriptor: Int32? = nil, family: Family = .tcp, type: SocketType = .stream, awaiter: IOAwaiter? = nil) throws
+    init(descriptor: Int32? = nil, family: Family = .tcp, type: SocketType = .stream) throws
 
     func bind(to: Address) throws -> Socket
     func listen() throws -> Socket
