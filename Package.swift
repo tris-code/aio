@@ -12,9 +12,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "Network",
+    name: "AIO",
     products: [
-        .library(name: "Network", targets: ["Network"])
+        .library(name: "AIO", targets: ["AIO"]),
+        .library(name: "Network", targets: ["Network"]),
+        .library(name: "File", targets: ["File"]),
     ],
     dependencies: [
         .package(
@@ -34,14 +36,26 @@ let package = Package(
             .branch("master")),
         .package(
             url: "https://github.com/tris-foundation/test.git",
+            .branch("master")),
+        .package(
+            url: "https://github.com/tris-foundation/fiber.git",
             .branch("master"))
     ],
     targets: [
         .target(
+            name: "AIO",
+            dependencies: ["File", "Network"]),
+        .target(
+            name: "File",
+            dependencies: ["Platform", "Stream"]),
+        .target(
             name: "Network",
             dependencies: ["Platform", "Time", "Async", "Stream", "Log"]),
         .testTarget(
+            name: "FileTests",
+            dependencies: ["Test", "File"]),
+        .testTarget(
             name: "NetworkTests",
-            dependencies: ["Network", "AsyncDispatch", "Test"])
+            dependencies: ["Network", "Test", "Fiber"])
     ]
 )
