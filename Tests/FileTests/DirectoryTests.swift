@@ -83,7 +83,8 @@ final class DirectoryTests: TestCase {
         #if Xcode
         assertEqual(Directory.current, "/private/tmp")
         #else
-        assertEqual(Directory.current?.path.string.suffix(3), "AIO")
+        let aio = Directory.current?.path.string.suffix(3).uppercased()
+        assertEqual(aio, "AIO")
         #endif
 
         Directory.current = Directory(path: temp)
