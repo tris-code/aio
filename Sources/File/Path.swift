@@ -8,6 +8,8 @@
  * See CONTRIBUTORS.txt for the list of the project authors
  */
 
+import Platform
+
 public struct Path: Equatable {
     public enum `Type`: Equatable {
         case absolute
@@ -42,6 +44,30 @@ extension Path {
         case false: self.type = .relative
         }
         self.components = string.split(separator: "/").map(String.init)
+    }
+}
+
+extension Path {
+    enum Error: Swift.Error {
+        case cantGetHome
+    }
+
+    mutating func expandTilde() throws {
+        guard type == .relative, components.first == "~" else {
+            return
+        }
+        guard let home = Environment["HOME"] else {
+            throw Error.cantGetHome
+        }
+        let homeComponents = home.split(separator: "/").map(String.init)
+        self.type = .absolute
+        self.components = homeComponents + components[1...]
+    }
+
+    func expandingTilde() throws -> Path {
+        var path = self
+        try path.expandTilde()
+        return path
     }
 }
 

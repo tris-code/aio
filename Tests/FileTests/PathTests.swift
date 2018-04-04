@@ -53,4 +53,20 @@ final class PathTests: TestCase {
         let tmp = path.removingLastComponent()
         assertEqual(tmp.string, "/tmp")
     }
+
+    func testExpandTilde() {
+        scope {
+            let path = Path(string: "~/test")
+            let homeTest = try path.expandingTilde()
+            print(homeTest.string)
+            #if os(macOS)
+            assertTrue(homeTest.string.starts(with: "/Users"))
+            #else
+            if !homeTest.string.starts(with: "/home") {
+                assertTrue(homeTest.string.starts(with: "/root"))
+            }
+            #endif
+            assertEqual(homeTest.string.suffix(5), "/test")
+        }
+    }
 }
