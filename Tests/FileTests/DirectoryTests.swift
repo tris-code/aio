@@ -67,4 +67,20 @@ final class DirectoryTests: TestCase {
         assertNoThrow(try Directory.remove(at: path))
         assertFalse(Directory.isExists(at: path))
     }
+
+    func testCurrent() {
+        #if Xcode
+        assertEqual(Directory.current, "/private/tmp")
+        #else
+        assertEqual(Directory.current?.path.string.suffix(3), "AIO")
+        #endif
+
+        Directory.current = Directory(path: temp)
+
+        #if os(macOS)
+        assertEqual(Directory.current, "/private/tmp/DirectoryTests")
+        #else
+        assertEqual(Directory.current, "/tmp/DirectoryTests")
+        #endif
+    }
 }

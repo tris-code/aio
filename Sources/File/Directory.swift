@@ -78,6 +78,20 @@ public class Directory {
 // MARK: static
 
 extension Directory {
+    static var current: Directory? {
+        get {
+            var directory = [Int8](repeating: 0, count: Int(PATH_MAX))
+            guard getcwd(&directory, directory.count) != nil else { return nil }
+            let path = Path(string: String(cString: directory))
+            return Directory(path: path)
+        }
+        set {
+            if let newValue = newValue {
+                chdir(newValue.path.string)
+            }
+        }
+    }
+
     public static func isExists(at path: Path) -> Bool {
         return access(path.string, F_OK) == 0
     }
