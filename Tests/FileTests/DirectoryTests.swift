@@ -28,6 +28,17 @@ final class DirectoryTests: TestCase {
         assertEqual(directory.description, "/tmp")
     }
 
+    func testName() {
+        let directory = Directory(name: "test")
+        assertEqual(directory.name, "test")
+    }
+
+    func testLocation() {
+        let directory = Directory(name: "test", at: "/tmp")
+        assertEqual(directory.name, "test")
+        assertEqual(directory.location.string, "/tmp")
+    }
+
     func testPath() {
         let directory = Directory(path: "/tmp")
         assertEqual(directory.path, "/tmp")
