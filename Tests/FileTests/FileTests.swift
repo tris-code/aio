@@ -36,6 +36,24 @@ final class FileTests: TestCase {
         assertEqual(file.path, temp.appending(#function))
     }
 
+    func testInitPath() {
+        scope {
+            let file = try File(path: temp.appending(#function))
+            assertEqual(file.name, #function)
+            assertEqual(file.location, temp)
+            assertEqual(file.path, temp.appending(#function))
+        }
+    }
+
+    func testInitString() {
+        scope {
+            let file = try File(string: temp.appending(#function).string)
+            assertEqual(file.name, #function)
+            assertEqual(file.location, temp)
+            assertEqual(file.path, temp.appending(#function))
+        }
+    }
+
     func testDescription() {
         let file = File(name: #function, at: temp)
         assertEqual(file.description, "file://\(temp)/\(#function)")
