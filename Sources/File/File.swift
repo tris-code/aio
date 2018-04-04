@@ -33,29 +33,15 @@ public class File {
     }
 
     public enum Error: String, Swift.Error {
-        case invalidName = "Invalid file name"
+        case invalidPath = "Invalid file path"
         case alreadyOpened = "The file is already opened"
         case closed = "The file was closed or wasn't opened"
         case exists = "The file is already exists"
     }
 
-    public init(
-        name: String,
-        at location: Path = Path(string: "~/"),
-        bufferSize: Int = 4096)
-    {
+    public init(name: String, at location: Path, bufferSize: Int = 4096) {
         self.name = name
         self.location = location
-        self.bufferSize = bufferSize
-    }
-
-    public init(path: Path, bufferSize: Int = 4096) throws {
-        var path = path
-        guard let name = path.components.popLast() else {
-            throw Error.invalidName
-        }
-        self.name = name
-        self.location = path
         self.bufferSize = bufferSize
     }
 
@@ -139,8 +125,17 @@ extension File {
 
 extension File {
     convenience
-    public init(path: String, bufferSize: Int = 4096) throws {
-        try self.init(path: Path(string: path), bufferSize: bufferSize)
+    public init(name: String) {
+        self.init(name: name, at: Directory.current?.path ?? "~/")
+    }
+
+    convenience
+    public init(path: Path) throws {
+        var path = path
+        guard let name = path.components.popLast() else {
+            throw Error.invalidPath
+        }
+        self.init(name: name, at: path)
     }
 }
 
