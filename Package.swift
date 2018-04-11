@@ -1,4 +1,4 @@
-// swift-tools-version:4.0
+// swift-tools-version:4.2
 /*
  * Copyright 2017 Tris Foundation and the project authors
  *
