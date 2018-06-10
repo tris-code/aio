@@ -117,4 +117,10 @@ final class DirectoryTests: TestCase {
             try Directory.changeWorkingDirectory(to: previous.path)
         }
     }
+
+    func testInitFromString() {
+        let path: String = "/"
+        let directory = Directory(string: path)
+        assertTrue(directory.isExist)
+    }
 }

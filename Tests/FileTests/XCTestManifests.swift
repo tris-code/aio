@@ -8,6 +8,7 @@ extension DirectoryTests {
         ("testCurrent", testCurrent),
         ("testDescription", testDescription),
         ("testExist", testExist),
+        ("testInitFromString", testInitFromString),
         ("testLocation", testLocation),
         ("testName", testName),
         ("testPath", testPath),
