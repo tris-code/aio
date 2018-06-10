@@ -2,6 +2,7 @@ import XCTest
 
 extension DirectoryTests {
     static let __allTests = [
+        ("testChangeWorkingDirectory", testChangeWorkingDirectory),
         ("testCreate", testCreate),
         ("testCreateIntermediate", testCreateIntermediate),
         ("testCurrent", testCurrent),
@@ -20,6 +21,8 @@ extension FileTests {
         ("testCreateExists", testCreateExists),
         ("testDescription", testDescription),
         ("testInit", testInit),
+        ("testInitPath", testInitPath),
+        ("testInitString", testInitString),
         ("testLifetime", testLifetime),
         ("testName", testName),
         ("testOpen", testOpen),
