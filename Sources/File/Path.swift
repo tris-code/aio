@@ -28,13 +28,13 @@ public struct Path: Equatable {
         }
     }
 
-    public func removingLastComponent() -> Path {
-        return Path(type: type, components: [String](components.dropLast()))
-    }
-
     public func appending(_ component: String) -> Path {
         let suffix = component.split(separator: "/").map(String.init)
         return Path(type: type, components: components + suffix)
+    }
+
+    public func deletingLastComponent() -> Path {
+        return Path(type: type, components: [String](components.dropLast()))
     }
 }
 

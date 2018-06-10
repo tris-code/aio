@@ -50,9 +50,9 @@ final class PathTests: TestCase {
         assertEqual(test.components.count, 3)
     }
 
-    func testRemovingLastComponent() {
+    func testDeletingLastComponent() {
         let path = Path(string: "/tmp/test")
-        let tmp = path.removingLastComponent()
+        let tmp = path.deletingLastComponent()
         assertEqual(tmp.string, "/tmp")
     }
 

@@ -40,7 +40,7 @@ extension PathTests {
         ("testDescription", testDescription),
         ("testExpandTilde", testExpandTilde),
         ("testRelativePath", testRelativePath),
-        ("testRemovingLastComponent", testRemovingLastComponent),
+        ("testDeletingLastComponent", testDeletingLastComponent),
         ("testString", testString),
     ]
 }
