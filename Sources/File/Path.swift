@@ -53,7 +53,7 @@ extension Path {
         case cantGetHome
     }
 
-    mutating func expandTilde() throws {
+    public mutating func expandTilde() throws {
         guard type == .relative, components.first == "~" else {
             return
         }
@@ -65,7 +65,7 @@ extension Path {
         self.components = homeComponents + components[1...]
     }
 
-    func expandingTilde() throws -> Path {
+    public func expandingTilde() throws -> Path {
         var path = self
         try path.expandTilde()
         return path

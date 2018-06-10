@@ -11,7 +11,7 @@
 
 import Test
 import Foundation
-@testable import File
+import File
 
 final class PathTests: TestCase {
     func testDescription() {
@@ -65,7 +65,11 @@ final class PathTests: TestCase {
             }
             let path = Path(string: "~/test")
             let homeTest = try path.expandingTilde()
-            print(homeTest.string)
+
+            var copy = path
+            try copy.expandTilde()
+            assertEqual(homeTest, copy)
+
             #if os(macOS)
             assertTrue(homeTest.string.starts(with: "/Users"))
             #else
