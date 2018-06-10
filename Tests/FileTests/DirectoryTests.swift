@@ -96,4 +96,25 @@ final class DirectoryTests: TestCase {
         assertEqual(Directory.current, "/tmp/DirectoryTests")
         #endif
     }
+
+    func testChangeWorkingDirectory() {
+        scope {
+            guard let previous = Directory.current else {
+                fail()
+                return
+            }
+
+            try Directory.changeWorkingDirectory(to: "/")
+            assertEqual(Directory.current, "/")
+
+            try Directory.changeWorkingDirectory(to: "/tmp")
+            #if os(macOS)
+            assertEqual(Directory.current, "/private/tmp")
+            #else
+            assertEqual(Directory.current, "/tmp")
+            #endif
+
+            try Directory.changeWorkingDirectory(to: previous.path)
+        }
+    }
 }
