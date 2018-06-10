@@ -20,7 +20,7 @@ struct Stat {
 
     init(for path: Path) throws {
         var st = stat()
-        try systemError { stat(path.string, &st) }
+        try system { stat(path.string, &st) }
         self.st = st
     }
 }

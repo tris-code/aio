@@ -38,7 +38,7 @@ public final class Directory {
         guard handle == nil else {
             return
         }
-        self.handle = try systemError {
+        self.handle = try system {
             return opendir(path.string)
         }
     }
@@ -77,7 +77,7 @@ public final class Directory {
         }
 
         try close()
-        try systemError { rmdir(path.string) }
+        try system { rmdir(path.string) }
     }
 }
 
@@ -108,7 +108,7 @@ extension Directory {
         permissions: Permissions = .directory) throws
     {
         func createCurrent() throws {
-            try systemError { mkdir(path.string, permissions.rawMask) }
+            try system { mkdir(path.string, permissions.rawMask) }
         }
 
         func createParent() throws {

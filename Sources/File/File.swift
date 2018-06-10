@@ -58,7 +58,7 @@ public class File {
             throw Error.alreadyOpened
         }
         let flags = OpenFlags(flags).rawValue
-        self.descriptor = Descriptor(rawValue: try systemError {
+        self.descriptor = Descriptor(rawValue: try system {
             return Platform.open(path.string, flags, permissions.rawMask)
         })
     }
@@ -73,7 +73,7 @@ public class File {
 
     public func close() throws {
         if let descriptor = descriptor {
-            try systemError { Platform.close(descriptor.rawValue) }
+            try system { Platform.close(descriptor.rawValue) }
             self.descriptor = nil
         }
     }
@@ -94,7 +94,7 @@ public class File {
 
     public func remove() throws {
         try close()
-        try systemError { Platform.remove(path.string) }
+        try system { Platform.remove(path.string) }
     }
 }
 
@@ -106,7 +106,7 @@ extension File {
     }
 
     public static func remove(at path: Path) throws {
-        try systemError { Platform.remove(path.string) }
+        try system { Platform.remove(path.string) }
     }
 
     public static func create(

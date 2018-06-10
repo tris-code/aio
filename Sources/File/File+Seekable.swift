@@ -17,7 +17,7 @@ extension File: Seekable {
         guard let descriptor = descriptor else {
             throw Error.closed
         }
-        try systemError { lseek(descriptor.rawValue, offset, origin.rawValue) }
+        try system { lseek(descriptor.rawValue, offset, origin.rawValue) }
     }
 }
 

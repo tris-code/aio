@@ -89,7 +89,7 @@ import Platform
 extension Permissions {
     init(for descriptor: Descriptor) throws {
         var st = stat()
-        try systemError { fstat(descriptor.rawValue, &st) }
+        try system { fstat(descriptor.rawValue, &st) }
         self = Permissions(rawMask: st.st_mode)
     }
 
@@ -104,10 +104,10 @@ extension Permissions {
 extension Optional where Wrapped == Permissions {
     func set(for descriptor: Descriptor) throws {
         guard let newValue = self else {
-            try systemError { fchmod(descriptor.rawValue, 0) }
+            try system { fchmod(descriptor.rawValue, 0) }
             return
         }
-        try systemError { fchmod(descriptor.rawValue, newValue.rawMask) }
+        try system { fchmod(descriptor.rawValue, newValue.rawMask) }
     }
 
     func set(for descriptor: Descriptor?) throws {
