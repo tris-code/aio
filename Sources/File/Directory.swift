@@ -61,23 +61,8 @@ public final class Directory {
     }
 
     public func remove() throws {
-        try open()
-
-        while let entry = readdir(handle!) {
-            // skip "." and ".."
-            if entry.isCurrentDirectory || entry.isParentDirectory {
-                continue
-            }
-            let child = path.appending(entry.name)
-            if entry.isDirectory {
-                try Directory(path: child).remove()
-            } else {
-                unlink(child.string)
-            }
-        }
-
         try close()
-        try system { rmdir(path.string) }
+        try Directory.remove(at: path)
     }
 
     public func contents() throws -> [Entry] {
@@ -134,7 +119,15 @@ extension Directory {
     }
 
     public static func remove(at path: Path) throws {
-        try Directory(path: path).remove()
+        let iterator = try DirectoryContentsIterator(at: path)
+        while let entry = iterator.next() {
+            switch entry.isDirectory {
+            case true: try Directory.remove(at: entry.path)
+            case false: unlink(entry.path.string)
+            }
+        }
+        iterator.close()
+        try system { rmdir(path.string) }
     }
 
     public static func changeWorkingDirectory(to path: Path) throws {
