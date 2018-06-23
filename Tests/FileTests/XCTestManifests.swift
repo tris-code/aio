@@ -3,6 +3,7 @@ import XCTest
 extension DirectoryTests {
     static let __allTests = [
         ("testChangeWorkingDirectory", testChangeWorkingDirectory),
+        ("testContents", testContents),
         ("testCreate", testCreate),
         ("testCreateIntermediate", testCreateIntermediate),
         ("testCurrent", testCurrent),
@@ -37,10 +38,10 @@ extension PathTests {
         ("testAbsolutePath", testAbsolutePath),
         ("testAppending", testAppending),
         ("testAppendingMany", testAppendingMany),
+        ("testDeletingLastComponent", testDeletingLastComponent),
         ("testDescription", testDescription),
         ("testExpandTilde", testExpandTilde),
         ("testRelativePath", testRelativePath),
-        ("testDeletingLastComponent", testDeletingLastComponent),
         ("testString", testString),
     ]
 }
