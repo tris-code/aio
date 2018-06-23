@@ -123,4 +123,19 @@ final class DirectoryTests: TestCase {
         let directory = Directory(string: path)
         assertTrue(directory.isExist)
     }
+
+    func testContents() {
+        scope {
+            let temp = self.temp.appending(#function)
+            let dir1 = Directory(name: "dir1", at: temp)
+            try dir1.create()
+
+            let directory = Directory(path: temp)
+            let contents = try directory.contents()
+            
+            assertEqual(contents, [Directory.Entry(
+                path: temp.appending("dir1"),
+                isDirectory: true)])
+        }
+    }
 }

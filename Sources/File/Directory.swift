@@ -79,6 +79,10 @@ public final class Directory {
         try close()
         try system { rmdir(path.string) }
     }
+
+    public func contents() throws -> [Entry] {
+        return try Directory.contents(at: path)
+    }
 }
 
 // MARK: static
@@ -136,6 +140,11 @@ extension Directory {
     public static func changeWorkingDirectory(to path: Path) throws {
         try system { chdir(path.string) }
     }
+
+    public static func contents(at path: Path) throws -> [Entry] {
+        let iterator = try DirectoryContentsIterator(at: path)
+        return [Entry](IteratorSequence(iterator))
+    }
 }
 
 extension Directory {
@@ -174,5 +183,61 @@ extension Directory: CustomStringConvertible {
 extension Directory: Equatable {
     public static func == (lhs: Directory, rhs: Directory) -> Bool {
         return lhs.path == rhs.path
+    }
+}
+
+// MARK: DirectoryContentsIterator
+
+extension Directory {
+    public struct Entry: Equatable {
+        public let path: Path
+        public let isDirectory: Bool
+
+        public init(path: Path, isDirectory: Bool) {
+            self.path = path
+            self.isDirectory = isDirectory
+        }
+    }
+}
+
+public class DirectoryContentsIterator: IteratorProtocol {
+    let path: Path
+    var handle: DirectoryHandle?
+
+    init(at path: Path) throws {
+        self.path = path
+        self.handle = try system { opendir(path.string) }
+    }
+
+    deinit {
+        close()
+        handle = nil
+    }
+
+    func close() {
+        guard let handle = handle else {
+            return
+        }
+        closedir(handle)
+        self.handle = nil
+    }
+
+    public func next() -> Directory.Entry? {
+        guard let handle = handle else {
+            return nil
+        }
+
+        while let entry = readdir(handle) {
+            // skip "." and ".."
+            if entry.isCurrentDirectory || entry.isParentDirectory {
+                continue
+            }
+            return Directory.Entry(
+                path: path.appending(entry.name),
+                isDirectory: entry.isDirectory)
+        }
+
+        close()
+        return nil
     }
 }
