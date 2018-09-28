@@ -13,6 +13,7 @@ import Test
 import File
 import Stream
 import Fiber
+import Platform
 @testable import Log
 @testable import Async
 @testable import Network
@@ -44,6 +45,8 @@ class SystemLoggerTests: TestCase {
     func testSystemLogger() {
         let unixPath = self.temp.appending(#function).string
         let message = "message"
+
+        unlink(unixPath)
 
         async.task {
             scope {
