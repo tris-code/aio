@@ -46,6 +46,7 @@ extension FileTests {
         ("testOpen", testOpen),
         ("testPermissions", testPermissions),
         ("testReadWrite", testReadWrite),
+        ("testRename", testRename),
     ]
 }
 
