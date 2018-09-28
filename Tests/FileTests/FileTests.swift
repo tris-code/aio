@@ -105,6 +105,23 @@ final class FileTests: TestCase {
         }
     }
 
+    func testRename() {
+        scope {
+            let file = File(name: "test.move", at: temp)
+            try file.create()
+
+            try file.rename(to: "new-test.move")
+            assertFalse(File.isExists(at: temp.appending("test.move")))
+            assertTrue(File.isExists(at: temp.appending("new-test.move")))
+        }
+
+        scope {
+            try File.rename("new-test.move", to: "test.move", at: temp)
+            assertTrue(File.isExists(at: temp.appending("test.move")))
+            assertFalse(File.isExists(at: temp.appending("new-test.move")))
+        }
+    }
+
     func testLifetime() {
         var streamReader: StreamReader? = nil
 
