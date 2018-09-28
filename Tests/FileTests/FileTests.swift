@@ -91,18 +91,14 @@ final class FileTests: TestCase {
     }
 
     func testReadWrite() {
-        defer {
-            try? File.remove(at: "/tmp/test.read-write")
-        }
-
         scope {
-            let file = File(name: "test.read-write", at: "/tmp")
+            let file = File(name: "test.read-write", at: temp)
             let stream = try file.open(flags: [.write, .create, .truncate])
             try stream.write("test string")
         }
 
         scope {
-            let file = File(name: "test.read-write", at: "/tmp")
+            let file = File(name: "test.read-write", at: temp)
             let string = try String(reading: file, as: UTF8.self)
             assertEqual(string, "test string")
             try file.remove()
@@ -110,14 +106,10 @@ final class FileTests: TestCase {
     }
 
     func testLifetime() {
-        defer {
-            try? File.remove(at: "/tmp/test.lifetime")
-        }
-
         var streamReader: StreamReader? = nil
 
         scope {
-            let file = File(name: "test.lifetime", at: "/tmp")
+            let file = File(name: "test.lifetime", at: temp)
             let stream = try file.open(flags: [.read, .write, .create])
             try stream.write("test string")
             try stream.flush()
