@@ -30,7 +30,7 @@ public final class Directory {
         try? close()
     }
 
-    public var isExist: Bool {
+    public var isExists: Bool {
         return Directory.isExists(at: path)
     }
 

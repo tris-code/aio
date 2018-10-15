@@ -45,32 +45,32 @@ final class DirectoryTests: TestCase {
         assertEqual(directory.path, "/tmp")
     }
 
-    func testExist() {
-        let directory = Directory(path: temp.appending("testExist"))
-        assertFalse(directory.isExist)
+    func testExists() {
+        let directory = Directory(path: temp.appending("testExists"))
+        assertFalse(directory.isExists)
     }
 
     func testCreate() {
         let directory = Directory(path: temp.appending("testCreate"))
-        assertFalse(directory.isExist)
+        assertFalse(directory.isExists)
         assertNoThrow(try directory.create())
-        assertTrue(directory.isExist)
+        assertTrue(directory.isExists)
     }
 
     func testCreateIntermediate() {
         let directory = Directory(
             path: temp.appending("testCreateIntermediate/one/two"))
 
-        assertFalse(directory.isExist)
+        assertFalse(directory.isExists)
         assertNoThrow(try directory.create(withIntermediateDirectories: true))
-        assertTrue(directory.isExist)
+        assertTrue(directory.isExists)
     }
 
     func testRemove() {
         let directory = Directory(path: temp.appending("testRemove"))
         assertNoThrow(try directory.create())
         assertNoThrow(try directory.remove())
-        assertFalse(directory.isExist)
+        assertFalse(directory.isExists)
     }
 
     func testRemoveWithContent() {
@@ -121,7 +121,7 @@ final class DirectoryTests: TestCase {
     func testInitFromString() {
         let path: String = "/"
         let directory = Directory(string: path)
-        assertTrue(directory.isExist)
+        assertTrue(directory.isExists)
     }
 
     func testContents() {
