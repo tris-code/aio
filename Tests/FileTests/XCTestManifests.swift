@@ -12,7 +12,7 @@ extension DirectoryTests {
         ("testCreateIntermediate", testCreateIntermediate),
         ("testCurrent", testCurrent),
         ("testDescription", testDescription),
-        ("testExist", testExist),
+        ("testExists", testExists),
         ("testInitFromString", testInitFromString),
         ("testLocation", testLocation),
         ("testName", testName),
