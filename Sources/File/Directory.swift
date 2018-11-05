@@ -77,7 +77,7 @@ extension Directory {
         get {
             var directory = [Int8](repeating: 0, count: Int(PATH_MAX))
             guard getcwd(&directory, directory.count) != nil else { return nil }
-            return Directory(path: .init(String(cString: directory)))
+            return Directory(at: .init(String(cString: directory)))
         }
         set {
             if let newValue = newValue {
@@ -146,15 +146,15 @@ extension Directory {
     }
 
     convenience
-    public init(path: Path) {
+    public init(at path: Path) {
         var path = path
         let name = path.components.popLast() ?? ""
         self.init(name: name, at: path)
     }
 
     convenience
-    public init(string: String) {
-        self.init(path: .init(string))
+    public init(at path: String) {
+        self.init(at: .init(path))
     }
 }
 
@@ -162,7 +162,7 @@ extension Directory {
 
 extension Directory: ExpressibleByStringLiteral {
     convenience public init(stringLiteral value: String) {
-        self.init(path: .init(value))
+        self.init(at: .init(value))
     }
 }
 
