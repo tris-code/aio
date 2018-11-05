@@ -41,7 +41,7 @@ final class FileTests: TestCase {
 
     func testInitPath() {
         scope {
-            let file = try File(path: temp.appending(#function))
+            let file = try File(at: temp.appending(#function))
             assertEqual(file.name, #function)
             assertEqual(file.location, temp)
             assertEqual(file.path, temp.appending(#function))
@@ -50,7 +50,7 @@ final class FileTests: TestCase {
 
     func testInitString() {
         scope {
-            let file = try File(string: temp.appending(#function).string)
+            let file = try File(at: temp.appending(#function).string)
             assertEqual(file.name, #function)
             assertEqual(file.location, temp)
             assertEqual(file.path, temp.appending(#function))

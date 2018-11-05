@@ -23,8 +23,7 @@ public class FileLogger: LogProtocol {
 
     convenience
     public init(fileAt path: Path) throws {
-        let file = try File(path: path)
-        try self.init(file)
+        try self.init(.init(at: path))
     }
 
     public init(_ file: File) throws {
