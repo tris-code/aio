@@ -34,16 +34,19 @@ public class File {
     }
 
     public enum Error: String, Swift.Error {
-        case invalidFileName = "Invalid file name"
+        case invalidName = "Invalid file name"
         case invalidPath = "Invalid file path"
         case alreadyOpened = "The file is already opened"
         case closed = "The file was closed or wasn't opened"
         case exists = "The file is already exists"
     }
 
-    public init<T>(name: T, at location: Path, bufferSize: Int = 4096)
+    public init<T>(name: T, at location: Path, bufferSize: Int = 4096) throws
         where T: StringProtocol
     {
+        guard !name.isEmpty else {
+            throw Error.invalidName
+        }
         self.name = String(name)
         self.location = location
         self.bufferSize = bufferSize
@@ -94,7 +97,7 @@ public class File {
 
     public func rename(to name: String) throws {
         guard name.isValidFileName else {
-            throw Error.invalidFileName
+            throw Error.invalidName
         }
         let newPath = location.appending(name).string
         try system { Platform.rename(path.string, newPath) }
@@ -151,24 +154,24 @@ extension File {
 
 extension File {
     convenience
-    public init<T: StringProtocol>(name: T) {
-        self.init(name: name, at: Directory.current?.path ?? "~/")
+    public init<T: StringProtocol>(name: T) throws {
+        try self.init(name: name, at: Directory.current?.path ?? "~/")
     }
 
     convenience
-    public init<T, U>(name: T, at path: U)
+    public init<T, U>(name: T, at path: U) throws
         where T: StringProtocol, U: StringProtocol
     {
-        self.init(name: name, at: .init(path))
+        try self.init(name: name, at: .init(path))
     }
 
     convenience
     public init(at path: Path) throws {
         var path = path
-        guard let name = path.components.popLast() else {
+        guard let name = path.deleteLastComponent() else {
             throw Error.invalidPath
         }
-        self.init(name: name, at: path)
+        try self.init(name: name, at: path)
     }
 
     convenience
