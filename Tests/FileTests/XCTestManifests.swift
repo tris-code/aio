@@ -56,9 +56,11 @@ extension PathTests {
     // to regenerate.
     static let __allTests__PathTests = [
         ("testAbsolutePath", testAbsolutePath),
+        ("testAppend", testAppend),
         ("testAppending", testAppending),
         ("testAppendingMany", testAppendingMany),
         ("testAppendingPath", testAppendingPath),
+        ("testAppendPath", testAppendPath),
         ("testDeletingLastComponent", testDeletingLastComponent),
         ("testDescription", testDescription),
         ("testExpandTilde", testExpandTilde),

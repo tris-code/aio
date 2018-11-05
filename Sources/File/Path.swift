@@ -12,14 +12,45 @@
 import Platform
 
 public struct Path: Equatable {
+    public var type: Type
+    public var components: [String]
+
     public enum `Type`: Equatable {
         case absolute
         case relative
     }
 
-    public var type: Type
-    public var components: [String]
+    public init<T: Sequence>(type: Type, components: T) 
+        where T.Element == String 
+    {
+        self.type = type
+        self.components = [String](components)
+    }
 
+    public mutating func append(_ another: Path) {
+        components.append(contentsOf: another.components)
+    }
+
+    @discardableResult
+    public mutating func deleteLastComponent() -> String? {
+        return components.popLast()
+    }
+}
+
+extension Path {
+    public var deletingLastComponent: Path {
+        guard components.count > 0 else { return self }
+        return .init(type: type, components: components.dropLast())
+    }
+
+    public func appending(_ another: Path) -> Path {
+        var path = self
+        path.append(another)
+        return path
+    }
+}
+
+extension Path {
     public var string: String {
         let path = components.joined(separator: "/")
         switch type {
@@ -28,21 +59,6 @@ public struct Path: Equatable {
         }
     }
 
-    public func appending(_ another: Path) -> Path {
-        return .init(type: type, components: components + another.components)
-    }
-
-    public func appending(_ component: String) -> Path {
-        let suffix = component.split(separator: "/").map(String.init)
-        return Path(type: type, components: components + suffix)
-    }
-
-    public func deletingLastComponent() -> Path {
-        return Path(type: type, components: [String](components.dropLast()))
-    }
-}
-
-extension Path {
     public init(string: String) {
         switch string.starts(with: "/") {
         case true: self.type = .absolute
@@ -50,11 +66,19 @@ extension Path {
         }
         self.components = string.split(separator: "/").map(String.init)
     }
+
+    public mutating func append(_ another: String) {
+        append(.init(string: another))
+    }
+
+    public func appending(_ another: String) -> Path {
+        return appending(.init(string: another))
+    }
 }
 
 extension Path {
-    enum Error: Swift.Error {
-        case cantGetHome
+    enum Error: String, Swift.Error {
+        case cantGetHome = "Environment variable HOME is empty"
     }
 
     public mutating func expandTilde() throws {
