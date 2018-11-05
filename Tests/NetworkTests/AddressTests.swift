@@ -127,6 +127,7 @@ class AddressTests: TestCase {
                 let ip = sockaddr.address.description
                 assertEqual(ip.split(separator: ".").count, 4)
             }
+            async.loop.terminate()
         }
         async.loop.run()
     }
@@ -159,6 +160,7 @@ class AddressTests: TestCase {
 
                 assertEqual(socket.selfAddress, Socket.Address.ip4(sockaddr))
             }
+            async.loop.terminate()
         }
 
         async.loop.run()
@@ -192,6 +194,7 @@ class AddressTests: TestCase {
 
                 assertEqual(socket.peerAddress, Socket.Address.ip4(sockaddr))
             }
+            async.loop.terminate()
         }
 
         async.loop.run()
@@ -225,6 +228,7 @@ class AddressTests: TestCase {
 
                 assertEqual(socket.selfAddress, Socket.Address.ip6(sockaddr))
             }
+            async.loop.terminate()
         }
 
         async.loop.run()
@@ -258,6 +262,7 @@ class AddressTests: TestCase {
 
                 assertEqual(socket.peerAddress, Socket.Address.ip6(sockaddr))
             }
+            async.loop.terminate()
         }
 
         async.loop.run()
