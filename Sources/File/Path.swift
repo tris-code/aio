@@ -59,7 +59,7 @@ extension Path {
         }
     }
 
-    public init(string: String) {
+    public init(_ string: String) {
         switch string.starts(with: "/") {
         case true: self.type = .absolute
         case false: self.type = .relative
@@ -68,11 +68,11 @@ extension Path {
     }
 
     public mutating func append(_ another: String) {
-        append(.init(string: another))
+        append(.init(another))
     }
 
     public func appending(_ another: String) -> Path {
-        return appending(.init(string: another))
+        return appending(.init(another))
     }
 }
 
@@ -108,16 +108,16 @@ extension Path: CustomStringConvertible {
 
 extension Path: ExpressibleByStringLiteral {
     public init(stringLiteral string: String) {
-        self.init(string: string)
+        self.init(string)
     }
 }
 
 extension Path {
     public static func ==(lhs: Path, rhs: String) -> Bool {
-        return lhs == Path(string: rhs)
+        return lhs == Path(rhs)
     }
 
     public static func ==(lhs: String, rhs: Path) -> Bool {
-        return Path(string: lhs) == rhs
+        return Path(lhs) == rhs
     }
 }

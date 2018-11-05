@@ -164,7 +164,7 @@ extension File {
 
     convenience
     public init(string: String) throws {
-        try self.init(path: Path(string: string))
+        try self.init(path: .init(string))
     }
 }
 

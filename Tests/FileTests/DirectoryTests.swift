@@ -14,7 +14,7 @@ import Platform
 import File
 
 final class DirectoryTests: TestCase {
-    let temp = Path(string: "/tmp/DirectoryTests")
+    let temp = Path("/tmp/DirectoryTests")
 
     override func setUp() {
         try? Directory.create(at: temp)

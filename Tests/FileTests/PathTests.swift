@@ -15,43 +15,43 @@ import File
 
 final class PathTests: TestCase {
     func testDescription() {
-        let path = Path(string: "/tmp/test")
+        let path = Path("/tmp/test")
         assertEqual(path.description, "/tmp/test")
     }
 
     func testAbsolutePath() {
-        let path = Path(string: "/tmp/test")
+        let path = Path("/tmp/test")
         assertEqual(path.components, ["tmp", "test"])
         assertEqual(path.type, .absolute)
     }
 
     func testRelativePath() {
-        let path = Path(string: "tmp/test")
+        let path = Path("tmp/test")
         assertEqual(path.components, ["tmp", "test"])
         assertEqual(path.type, .relative)
     }
 
     func testString() {
         let string = "/tmp/test"
-        let path = Path(string: string)
+        let path = Path(string)
         assertEqual(path.components, ["tmp", "test"])
         assertEqual(path.string, string)
     }
 
     func testAppend() {
-        var path = Path(string: "/tmp")
+        var path = Path("/tmp")
         path.append("test")
         assertEqual(path.string, "/tmp/test")
     }
 
     func testAppending() {
-        let path = Path(string: "/tmp")
+        let path = Path("/tmp")
         let test = path.appending("test")
         assertEqual(test.string, "/tmp/test")
     }
 
     func testAppendingMany() {
-        let path = Path(string: "/tmp")
+        let path = Path("/tmp")
         let test = path.appending("one/two")
         assertEqual(test.string, "/tmp/one/two")
         assertEqual(test.components, ["tmp", "one", "two"])
@@ -59,23 +59,23 @@ final class PathTests: TestCase {
 
     func testAppendPath() {
         scope {
-            var path = Path(string: "/tmp")
-            path.append(.init(string: "test"))
+            var path = Path("/tmp")
+            path.append(.init("test"))
             assertEqual(path.string, "/tmp/test")
         }
     }
 
     func testAppendingPath() {
         scope {
-            let path = Path(string: "/tmp")
-            let test = Path(string: "test")
+            let path = Path("/tmp")
+            let test = Path("test")
             let combined = path.appending(test)
             assertEqual(combined.string, "/tmp/test")
         }
     }
 
     func testDeletingLastComponent() {
-        let path = Path(string: "/tmp/test")
+        let path = Path("/tmp/test")
         let tmp = path.deletingLastComponent
         assertEqual(tmp.string, "/tmp")
     }
@@ -87,7 +87,7 @@ final class PathTests: TestCase {
                 !home.isEmpty else {
                     return
             }
-            let path = Path(string: "~/test")
+            let path = Path("~/test")
             let homeTest = try path.expandingTilde()
 
             var copy = path

@@ -18,7 +18,7 @@ public class FileLogger: LogProtocol {
 
     convenience
     public init(fileAtPath path: String) throws {
-        try self.init(fileAt: Path(string: path))
+        try self.init(fileAt: Path(path))
     }
 
     convenience

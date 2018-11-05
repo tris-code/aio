@@ -14,7 +14,7 @@ import File
 @testable import Log
 
 class FileLoggerTests: TestCase {
-    var temp = Path(string: "/tmp/FileLoggerTests")
+    var temp = Path("/tmp/FileLoggerTests")
 
     var isEnabled: Bool! = nil
     var level: Log.Message.Level! = nil
