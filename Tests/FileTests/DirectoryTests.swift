@@ -42,6 +42,8 @@ final class DirectoryTests: TestCase {
 
     func testPath() {
         let directory = Directory(at: "/tmp")
+        assertEqual(directory.location, "/")
+        assertEqual(directory.name, "tmp")
         assertEqual(directory.path, "/tmp")
     }
 
@@ -137,5 +139,21 @@ final class DirectoryTests: TestCase {
                 path: temp.appending("dir1"),
                 isDirectory: true)])
         }
+    }
+
+    func testEquatable() {
+        assertNotEqual(Directory(at: "/tmp"), Directory(at: "/"))
+        assertEqual(Directory(at: "/"), Directory(at: "/"))
+        assertTrue(Directory("/") == String("/"))
+        assertTrue(String("/") == Directory("/"))
+    }
+
+    func testStringProtocol() {
+        _ = Directory(at: "/tmp"[...])
+        _ = Directory(name: "tmp"[...])
+        _ = Directory(name: "tmp"[...], at: "/"[...])
+        _ = Directory(name: "tmp"[...], at: Path("/"))
+        assertTrue(Directory(at: "/") == String("/")[...])
+        assertTrue(String("/")[...] == Directory(at: "/"))
     }
 }

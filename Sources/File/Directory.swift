@@ -21,8 +21,8 @@ public final class Directory {
 
     var handle: DirectoryHandle?
 
-    public init(name: String, at location: Path) {
-        self.name = name
+    public init<T: StringProtocol>(name: T, at location: Path) {
+        self.name = String(name)
         self.location = location
     }
 
@@ -77,7 +77,7 @@ extension Directory {
         get {
             var directory = [Int8](repeating: 0, count: Int(PATH_MAX))
             guard getcwd(&directory, directory.count) != nil else { return nil }
-            return Directory(at: .init(String(cString: directory)))
+            return Directory(at: String(cString: directory))
         }
         set {
             if let newValue = newValue {
@@ -141,40 +141,58 @@ extension Directory {
 
 extension Directory {
     convenience
-    public init(name: String) {
-        self.init(name: name, at: Directory.current?.path ?? "~/")
-    }
-
-    convenience
     public init(at path: Path) {
         var path = path
-        let name = path.components.popLast() ?? ""
+        let name = path.deleteLastComponent() ?? ""
         self.init(name: name, at: path)
     }
 
     convenience
-    public init(at path: String) {
+    public init<T: StringProtocol>(at path: T) {
         self.init(at: .init(path))
     }
-}
 
-// MARK: description / equatable
+    convenience
+    public init<T: StringProtocol>(name: T) {
+        self.init(name: name, at: Directory.current?.path ?? "~/")
+    }
 
-extension Directory: ExpressibleByStringLiteral {
-    convenience public init(stringLiteral value: String) {
-        self.init(at: .init(value))
+    convenience
+    public init<T: StringProtocol, U: StringProtocol>(name: T, at path: U) {
+        self.init(name: name, at: .init(path))
     }
 }
+
+// MARK: ExpressibleByStringLiteral
+
+extension Directory: ExpressibleByStringLiteral {
+    convenience 
+    public init(stringLiteral value: String) {
+        self.init(at: value)
+    }
+}
+
+// MARK: Equatable
+
+extension Directory: Equatable {
+    public static func == (lhs: Directory, rhs: Directory) -> Bool {
+        return lhs.name == rhs.name && lhs.location == rhs.location
+    }
+
+    public static func ==<T: StringProtocol>(lhs: Directory, rhs: T) -> Bool {
+        return lhs == Directory(at: rhs)
+    }
+
+    public static func ==<T: StringProtocol>(lhs: T, rhs: Directory) -> Bool {
+        return rhs == lhs
+    }
+}
+
+// MARK: CustomStringConvertible
 
 extension Directory: CustomStringConvertible {
     public var description: String {
         return path.description
-    }
-}
-
-extension Directory: Equatable {
-    public static func == (lhs: Directory, rhs: Directory) -> Bool {
-        return lhs.path == rhs.path
     }
 }
 

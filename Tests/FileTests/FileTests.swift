@@ -155,4 +155,22 @@ final class FileTests: TestCase {
 
         assertEqual(permissions.rawMask, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
     }
+
+    func testEquatable() {
+        assertNotEqual(try File(at: "/tmp/file"), try File(at: "/file"))
+        assertEqual(try File(at: "/file"), try File(at: "/file"))
+        assertTrue(try File(at: "/file") == String("/file"))
+        assertTrue(String("/file") == (try File(at: "/file")))
+    }
+
+    func testStringProtocol() {
+        scope {
+            _ = try File(at: "/file"[...])
+            _ = File(name: "file"[...])
+            _ = File(name: "file"[...], at: "/"[...])
+            _ = File(name: "file"[...], at: Path("/"))
+            assertTrue(try File(at: "/file") == String("/file")[...])
+            assertTrue(String("/file")[...] == (try File(at: "/file")))
+        }
+    }
 }

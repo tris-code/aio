@@ -104,4 +104,18 @@ final class PathTests: TestCase {
             assertEqual(homeTest.string.suffix(5), "/test")
         }
     }
+
+    func testEquatable() {
+        assertEqual(Path("/"), Path("/"))
+        assertTrue(Path("/") == String("/"))
+        assertTrue(String("/") == Path("/"))
+    }
+
+    func testStringProtocol() {
+        var path = Path("/"[...])
+        path.append("component"[...])
+        _ = path.appending("component"[...])
+        assertTrue(Path("/") == String("/")[...])
+        assertTrue(String("/")[...] == Path("/"))
+    }
 }

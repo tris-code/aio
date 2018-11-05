@@ -11,11 +11,11 @@
 
 import Platform
 
-public struct Path: Equatable {
+public struct Path {
     public var type: Type
     public var components: [String]
 
-    public enum `Type`: Equatable {
+    public enum `Type` {
         case absolute
         case relative
     }
@@ -59,19 +59,19 @@ extension Path {
         }
     }
 
-    public init(_ string: String) {
-        switch string.starts(with: "/") {
-        case true: self.type = .absolute
-        case false: self.type = .relative
+    public init<T: StringProtocol>(_ path: T) {
+        switch path.first {
+        case "/": self.type = .absolute
+        default: self.type = .relative
         }
-        self.components = string.split(separator: "/").map(String.init)
+        self.components = path.split(separator: "/").map { String($0) }
     }
 
-    public mutating func append(_ another: String) {
+    public mutating func append<T: StringProtocol>(_ another: T) {
         append(.init(another))
     }
 
-    public func appending(_ another: String) -> Path {
+    public func appending<T: StringProtocol>(_ another: T) -> Path {
         return appending(.init(another))
     }
 }
@@ -100,24 +100,30 @@ extension Path {
     }
 }
 
-extension Path: CustomStringConvertible {
-    public var description: String {
-        return string
-    }
-}
+// MARK: ExpressibleByStringLiteral
 
 extension Path: ExpressibleByStringLiteral {
-    public init(stringLiteral string: String) {
-        self.init(string)
+    public init(stringLiteral value: String) {
+        self.init(value)
     }
 }
 
-extension Path {
-    public static func ==(lhs: Path, rhs: String) -> Bool {
+// MARK: Equatable
+
+extension Path: Equatable {
+    public static func ==<T: StringProtocol>(lhs: Path, rhs: T) -> Bool {
         return lhs == Path(rhs)
     }
 
-    public static func ==(lhs: String, rhs: Path) -> Bool {
-        return Path(lhs) == rhs
+    public static func ==<T: StringProtocol>(lhs: T, rhs: Path) -> Bool {
+        return rhs == lhs
+    }
+}
+
+// MARK: CustomStringConvertible
+
+extension Path: CustomStringConvertible {
+    public var description: String {
+        return string
     }
 }

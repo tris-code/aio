@@ -12,6 +12,7 @@ extension DirectoryTests {
         ("testCreateIntermediate", testCreateIntermediate),
         ("testCurrent", testCurrent),
         ("testDescription", testDescription),
+        ("testEquatable", testEquatable),
         ("testExists", testExists),
         ("testInitFromString", testInitFromString),
         ("testLocation", testLocation),
@@ -19,6 +20,7 @@ extension DirectoryTests {
         ("testPath", testPath),
         ("testRemove", testRemove),
         ("testRemoveWithContent", testRemoveWithContent),
+        ("testStringProtocol", testStringProtocol),
     ]
 }
 
@@ -38,6 +40,7 @@ extension FileTests {
     static let __allTests__FileTests = [
         ("testCreateExists", testCreateExists),
         ("testDescription", testDescription),
+        ("testEquatable", testEquatable),
         ("testInit", testInit),
         ("testInitPath", testInitPath),
         ("testInitString", testInitString),
@@ -47,6 +50,7 @@ extension FileTests {
         ("testPermissions", testPermissions),
         ("testReadWrite", testReadWrite),
         ("testRename", testRename),
+        ("testStringProtocol", testStringProtocol),
     ]
 }
 
@@ -63,9 +67,11 @@ extension PathTests {
         ("testAppendPath", testAppendPath),
         ("testDeletingLastComponent", testDeletingLastComponent),
         ("testDescription", testDescription),
+        ("testEquatable", testEquatable),
         ("testExpandTilde", testExpandTilde),
         ("testRelativePath", testRelativePath),
         ("testString", testString),
+        ("testStringProtocol", testStringProtocol),
     ]
 }
 
