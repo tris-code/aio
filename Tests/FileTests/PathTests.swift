@@ -50,6 +50,15 @@ final class PathTests: TestCase {
         assertEqual(test.components.count, 3)
     }
 
+    func testAppendingPath() {
+        scope {
+            let path = Path(string: "/tmp")
+            let test = Path(string: "test")
+            let combined = path.appending(test)
+            assertEqual(combined.string, "/tmp/test")
+        }
+    }
+
     func testDeletingLastComponent() {
         let path = Path(string: "/tmp/test")
         let tmp = path.deletingLastComponent()

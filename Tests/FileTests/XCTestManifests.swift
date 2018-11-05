@@ -1,4 +1,4 @@
-#if !os(macOS)
+#if !canImport(ObjectiveC)
 import XCTest
 
 extension DirectoryTests {
@@ -58,6 +58,7 @@ extension PathTests {
         ("testAbsolutePath", testAbsolutePath),
         ("testAppending", testAppending),
         ("testAppendingMany", testAppendingMany),
+        ("testAppendingPath", testAppendingPath),
         ("testDeletingLastComponent", testDeletingLastComponent),
         ("testDescription", testDescription),
         ("testExpandTilde", testExpandTilde),

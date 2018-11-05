@@ -28,6 +28,10 @@ public struct Path: Equatable {
         }
     }
 
+    public func appending(_ another: Path) -> Path {
+        return .init(type: type, components: components + another.components)
+    }
+
     public func appending(_ component: String) -> Path {
         let suffix = component.split(separator: "/").map(String.init)
         return Path(type: type, components: components + suffix)
