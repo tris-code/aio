@@ -186,4 +186,16 @@ final class FileTests: TestCase {
             assertTrue(String("/file")[...] == (try File(at: "/file")))
         }
     }
+
+    func testSize() {
+        scope {
+            let file = try File(name: #function, at: temp)
+            try file.create()
+            assertEqual(file.size, 0)
+            let stream = try file.open(flags: .write)
+            try stream.write(.a)
+            try stream.flush()
+            assertEqual(file.size, 1)
+        }
+    }
 }

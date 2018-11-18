@@ -1,10 +1,10 @@
 import XCTest
 
-import NetworkTests
 import FileTests
+import NetworkTests
 
 var tests = [XCTestCaseEntry]()
-tests += NetworkTests.__allTests()
 tests += FileTests.__allTests()
+tests += NetworkTests.__allTests()
 
 XCTMain(tests)

@@ -50,6 +50,7 @@ extension FileTests {
         ("testPermissions", testPermissions),
         ("testReadWrite", testReadWrite),
         ("testRename", testRename),
+        ("testSize", testSize),
         ("testStringProtocol", testStringProtocol),
     ]
 }

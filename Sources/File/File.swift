@@ -56,6 +56,15 @@ public class File {
         try? close()
     }
 
+    public var size: Int {
+        var st = stat()
+        switch descriptor {
+        case .some(let descriptor): fstat(descriptor.rawValue, &st)
+        case .none: stat(path.string, &st)
+        }
+        return Int(st.st_size)
+    }
+
     private func open(
         _ flags: Flags = .read,
         _ permissions: Permissions = .file) throws
