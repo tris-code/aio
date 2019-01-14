@@ -1,14 +1,3 @@
-/******************************************************************************
- *                                                                            *
- * Tris Foundation disclaims copyright to this source code.                   *
- * In place of a legal notice, here is a blessing:                            *
- *                                                                            *
- *     May you do good and not evil.                                          *
- *     May you find forgiveness for yourself and forgive others.              *
- *     May you share freely, never taking more than you give.                 *
- *                                                                            *
- ******************************************************************************/
-
 import Platform
 
 public struct Path {
@@ -20,8 +9,8 @@ public struct Path {
         case relative
     }
 
-    public init<T: Sequence>(type: Type, components: T) 
-        where T.Element == String 
+    public init<T: Sequence>(type: Type, components: T)
+        where T.Element == String
     {
         self.type = type
         self.components = [String](components)

@@ -1,14 +1,3 @@
-/******************************************************************************
- *                                                                            *
- * Tris Foundation disclaims copyright to this source code.                   *
- * In place of a legal notice, here is a blessing:                            *
- *                                                                            *
- *     May you do good and not evil.                                          *
- *     May you find forgiveness for yourself and forgive others.              *
- *     May you share freely, never taking more than you give.                 *
- *                                                                            *
- ******************************************************************************/
-
 import Test
 import Platform
 import File
@@ -134,7 +123,7 @@ final class DirectoryTests: TestCase {
 
             let directory = Directory(at: temp)
             let contents = try directory.contents()
-            
+
             assertEqual(contents, [Directory.Entry(
                 path: temp.appending("dir1"),
                 isDirectory: true)])
