@@ -5,7 +5,7 @@ Asynchronous non-blocking io with syncronous API. **No callbacks.**
 ## Package.swift
 
  ```swift
-.package(url: "https://github.com/tris-foundation/aio.git", .branch("master"))
+.package(url: "https://github.com/tris-code/aio.git", .branch("master"))
 ```
 
 # Network
@@ -14,7 +14,7 @@ Zero-cost socket abstraction designed for cooperative multitasking.
 
 ## Usage
 
-You can find this code and more in [examples](https://github.com/tris-foundation/examples).
+You can find this code and more in [examples](https://github.com/tris-code/examples).
 
 ### Sync
 ```swift
