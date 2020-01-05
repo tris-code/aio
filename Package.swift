@@ -9,27 +9,13 @@ let package = Package(
         .library(name: "File", targets: ["File"]),
     ],
     dependencies: [
-        .package(
-            url: "https://github.com/tris-code/platform.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/time.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/log.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/async.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/stream.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/test.git",
-            .branch("master")),
-        .package(
-            url: "https://github.com/tris-code/fiber.git",
-            .branch("master"))
+        .package(path: "../Platform"),
+        .package(path: "../Time"),
+        .package(path: "../Log"),
+        .package(path: "../Async"),
+        .package(path: "../Stream"),
+        .package(path: "../Test"),
+        .package(path: "../Fiber")
     ],
     targets: [
         .target(
