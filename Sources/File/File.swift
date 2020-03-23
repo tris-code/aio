@@ -22,14 +22,6 @@ public class File {
         set { try? newValue.set(for: descriptor) }
     }
 
-    public enum Error: String, Swift.Error {
-        case invalidName = "Invalid file name"
-        case invalidPath = "Invalid file path"
-        case alreadyOpened = "The file is already opened"
-        case closed = "The file was closed or wasn't opened"
-        case exists = "The file is already exists"
-    }
-
     public init<T>(name: T, at location: Path, bufferSize: Int = 4096) throws
         where T: StringProtocol
     {
@@ -112,8 +104,12 @@ extension File {
         flags: Flags = .read,
         permissions: Permissions = .file) throws -> Stream
     {
-        try open(flags, permissions)
-        return BufferedStream(baseStream: self, capacity: bufferSize)
+        do {
+            try open(flags, permissions)
+            return BufferedStream(baseStream: self, capacity: bufferSize)
+        } catch let error as SystemError {
+            throw File.Error(systemError: error)
+        }
     }
 }
 
