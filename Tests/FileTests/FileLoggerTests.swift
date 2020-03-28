@@ -9,20 +9,20 @@ class FileLoggerTests: TestCase {
     var level: Log.Message.Level! = nil
     var delegate: LogProtocol! = nil
 
-    override func setUpWithError() throws {
+    override func setUp() {
         isEnabled = Log.isEnabled
         level = Log.level
         delegate = Log.delegate
 
-        try Directory.create(at: temp)
+        try? Directory.create(at: temp)
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() {
         Log.isEnabled = isEnabled
         Log.level = level
         Log.delegate = delegate
 
-        try Directory.remove(at: temp)
+        try? Directory.remove(at: temp)
     }
 
     func testFileLogger() {
