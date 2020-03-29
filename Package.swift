@@ -9,13 +9,13 @@ let package = Package(
         .library(name: "File", targets: ["File"]),
     ],
     dependencies: [
-        .package(path: "../Platform"),
-        .package(path: "../Time"),
-        .package(path: "../Log"),
-        .package(path: "../Async"),
-        .package(path: "../Stream"),
-        .package(path: "../Test"),
-        .package(path: "../Fiber")
+        .package(path: "../platform"),
+        .package(path: "../time"),
+        .package(path: "../log"),
+        .package(path: "../async"),
+        .package(path: "../stream"),
+        .package(path: "../test"),
+        .package(path: "../fiber")
     ],
     targets: [
         .target(
